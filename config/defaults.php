@@ -27,10 +27,10 @@ $config[Translator::class] = [
 $config['migrations'] = __DIR__ . '/../resources/migrations';
 
 $config['db'] = [
-    'database' => 'slim',
-    'charset' => 'utf8',
-    'encoding' => 'utf8',
-    'collation' => 'utf8_unicode_ci',
+    'database' => 'wavetrophy',
+    'charset' => 'utf8mb4',
+    'encoding' => 'utf8mb4',
+    'collation' => 'utf8mb4_unicode_ci',
 ];
 
 $config['db_test'] = [
