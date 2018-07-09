@@ -72,6 +72,37 @@ class AppController
     }
 
     /**
+     * Return redirect.
+     *
+     * @param Response $response
+     * @param string $url
+     * @param int $status
+     *
+     * @return ResponseInterface
+     */
+    public function redirect(Response $response, string $url, int $status = 301): ResponseInterface
+    {
+        return $response->withRedirect($url, $status);
+    }
+
+    /**
+     * Check if Request comes from the mobile application.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    protected function isRequestedFromMobileApp(Request $request)
+    {
+        $header = $request->getHeader('X-App');
+        $header = empty($header) ? 'browser' : $header[0];
+        if (strtolower($header) === 'mobile') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Render HTML.
      *
      * @param Response $response
@@ -86,11 +117,15 @@ class AppController
         Request $request,
         string $file,
         array $viewData = []
-    ): ResponseInterface {
+    ): ResponseInterface
+    {
         $extend = [
             'language' => $request->getAttribute('language'),
-            'page' => 'Slim Application',
-            'is_logged_in' => $this->session->get('logged_in') ?: false,
+            'page' => __('Home'),
+            'is_logged_in' => $this->session->get('is_logged_in') ?: false,
+            'active' => [
+                'home' => false
+            ]
         ];
         $viewData = array_replace_recursive($extend, $viewData);
 
@@ -109,19 +144,5 @@ class AppController
     protected function json(Response $response, $data, int $status = 200): ResponseInterface
     {
         return $response->withJson($data, $status);
-    }
-
-    /**
-     * Return redirect.
-     *
-     * @param Response $response
-     * @param string $url
-     * @param int $status
-     *
-     * @return ResponseInterface
-     */
-    public function redirect(Response $response, string $url, int $status = 301): ResponseInterface
-    {
-        return $response->withRedirect($url, $status);
     }
 }

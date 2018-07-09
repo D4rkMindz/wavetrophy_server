@@ -11,6 +11,6 @@ namespace App\Table;
 /**
  * Interface ModelInterface.
  */
-interface ModelInterface
+interface TableInterface
 {
 }

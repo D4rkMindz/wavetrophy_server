@@ -1,5 +1,7 @@
 <?php
 
+use App\Repository\UserRepository;
+use App\Service\Authentication\AuthenticationValidation;
 use App\Table\UserModel;
 use Aura\Session\Session;
 use Aura\Session\SessionFactory;
@@ -145,4 +147,16 @@ $container['notFoundHandler'] = function (Container $container) {
     return function (Request $request, Response $response) use ($container) {
         return $response->withRedirect($container->get('router')->pathFor('notFound', ['language' => 'en']));
     };
+};
+
+$container[UserRepository::class] = function (Container $container) {
+    return new UserRepository($container);
+};
+
+$container[AuthenticationValidation::class] = function (Container $container) {
+    return new AuthenticationValidation($container);
+};
+
+$container[\App\Table\UserTable::class] = function (Container $container) {
+    return new \App\Table\UserTable($container->get(Connection::class));
 };

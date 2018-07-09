@@ -64,6 +64,14 @@ $config['session'] = [
     'httponly' => false, //default
 ];
 
+$config['allowed_routes'] = [
+    'get.landingpage',
+    'get.login',
+    'get.register',
+    'api.authenticate',
+    'notFound',
+];
+
 $config['logger'] = [
     'main' => 'app',
 ];

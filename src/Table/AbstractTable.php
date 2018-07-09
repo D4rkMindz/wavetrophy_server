@@ -9,7 +9,7 @@ use Cake\Database\StatementInterface;
 /**
  * Class AbstractTable.
  */
-abstract class AbstractTable implements ModelInterface
+abstract class AbstractTable implements TableInterface
 {
     protected $table = null;
 
@@ -32,7 +32,7 @@ abstract class AbstractTable implements ModelInterface
      *
      * @return Query
      */
-    protected function newSelect(): Query
+    public function newSelect(): Query
     {
         return $this->connection->newQuery()->from($this->table);
     }
@@ -42,7 +42,7 @@ abstract class AbstractTable implements ModelInterface
      *
      * @return array $rows
      */
-    protected function getAll(): array
+    public function getAll(): array
     {
         $query = $this->newSelect();
         $query->select('*');
@@ -58,7 +58,7 @@ abstract class AbstractTable implements ModelInterface
      *
      * @return StatementInterface
      */
-    protected function insert(array $row): StatementInterface
+    public function insert(array $row): StatementInterface
     {
         return $this->connection->insert($this->table, $row);
     }
@@ -71,7 +71,7 @@ abstract class AbstractTable implements ModelInterface
      *
      * @return StatementInterface
      */
-    protected function update(array $row, string $where): StatementInterface
+    public function update(array $row, string $where): StatementInterface
     {
         $query = $this->connection->newQuery();
         $query->update($this->table)
@@ -88,7 +88,7 @@ abstract class AbstractTable implements ModelInterface
      *
      * @return StatementInterface
      */
-    protected function delete(string $id): StatementInterface
+    public function delete(string $id): StatementInterface
     {
         return $this->connection->delete($this->table, ['id' => $id]);
     }

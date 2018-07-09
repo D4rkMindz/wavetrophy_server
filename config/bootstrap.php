@@ -16,6 +16,8 @@ require __DIR__ . '/../config/container.php';
 // Register routes
 require __DIR__ . '/../config/routes.php';
 
+require __DIR__ . '/../config/middleware.php';
+
 // set App
 __($app->getContainer()->get(Translator::class));
 

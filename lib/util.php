@@ -1,5 +1,6 @@
 <?php
 
+use Slim\App;
 use Symfony\Component\Translation\Translator;
 
 /**
@@ -23,3 +24,32 @@ function __($message) {
 
     return $translated;
 };
+
+/**
+ * Get Container.
+ *
+ * @return \Psr\Container\ContainerInterface
+ */
+function container()
+{
+    return app()->getContainer();
+}
+
+/**
+ * Get app.
+ *
+ * @param App|null $inst
+ * @return App
+ */
+function app(App $inst = null): App
+{
+    static $app = null;
+    if ($inst instanceof App) {
+        $app = $inst;
+    }
+    if ($app === null) {
+        $config = ['settings' => require __DIR__ . '/../config/config.php'];
+        $app = new App($config);
+    }
+    return $app;
+}
