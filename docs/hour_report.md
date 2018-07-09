@@ -1,8 +1,8 @@
 # Hour Report
 Example:
-| From | Until | Work |
+| Hours | Work |
 |  |  |  |
 ## Björn Pfoster
 ### 9. July 2018
-| From | Until | Work |
-| 12:30 | 13:10 | Created and migrated database schema | 
+| Hours | Work |
+| 0.75 | Created and migrated database schema | 
