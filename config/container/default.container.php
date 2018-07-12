@@ -1,8 +1,6 @@
 <?php
 
-use App\Repository\UserRepository;
 use App\Service\Authentication\AuthenticationValidation;
-use App\Table\UserModel;
 use Aura\Session\Session;
 use Aura\Session\SessionFactory;
 use Cake\Database\Connection;
@@ -109,24 +107,6 @@ $container[Connection::class] = function (Container $container): Connection {
 };
 
 /**
- * Session container.
- *
- * @param Container $container
- * @return Session
- * @throws ContainerException
- */
-$container[Session::class] = function (Container $container): Session {
-    $factory = new SessionFactory();
-    $cookies = $container->get('request')->getCookieParams();
-    $session = $factory->newInstance($cookies);
-    $settings = $container->get('settings')->get(Session::class);
-    $session->setName($settings['name']);
-    $session->setCacheExpire($settings['cache_expire']);
-
-    return $session;
-};
-
-/**
  * Logger container.
  *
  * @param Container $container
@@ -149,14 +129,12 @@ $container['notFoundHandler'] = function (Container $container) {
     };
 };
 
-$container[UserRepository::class] = function (Container $container) {
-    return new UserRepository($container);
-};
-
+/**
+ * Authentication validation container.
+ *
+ * @param Container $container
+ * @return AuthenticationValidation
+ */
 $container[AuthenticationValidation::class] = function (Container $container) {
     return new AuthenticationValidation($container);
-};
-
-$container[\App\Table\UserTable::class] = function (Container $container) {
-    return new \App\Table\UserTable($container->get(Connection::class));
 };

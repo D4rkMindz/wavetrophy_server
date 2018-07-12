@@ -3,27 +3,21 @@
 namespace App\Test;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
-/**
- * Class BaseTestCase.
- */
 abstract class BaseTestCase extends TestCase
 {
     /**
      * Call protected/private method of a class.
      *
-     * @param object $object instantiated object that we will run method on
+     * @param object &$object    Instantiated object that we will run method on.
      * @param string $methodName Method name to call
-     * @param array $parameters array of parameters to pass into method
+     * @param array  $parameters Array of parameters to pass into method.
      *
-     * @throws \ReflectionException
-     *
-     * @return mixed method return
+     * @return mixed Method return.
      */
-    protected function invokeMethod(&$object, $methodName, array $parameters = [])
+    protected function invokeMethod(&$object, $methodName, array $parameters = array())
     {
-        $reflection = new ReflectionClass(get_class($object));
+        $reflection = new \ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
 

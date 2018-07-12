@@ -2,12 +2,14 @@
 
 namespace App\Test;
 
-use Aura\Session\Session;
+use App\Factory\JWTFactory;
+use App\Service\Mail\MailerInterface;
+use App\Test\Mock\MockMailer;
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use App\Test\Mock\MockLogger;
+use Monolog\Logger;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use ReflectionException;
 use Slim\App;
 use Slim\Container;
 use Slim\Exception\MethodNotAllowedException;
@@ -21,9 +23,9 @@ use Slim\Http\UploadedFile;
 use Slim\Http\Uri;
 
 /**
- * Class ApiTestCase.
+ * Class ApiTestCase
  */
-abstract class ApiTestCase extends BaseTestCase
+abstract class ApiTestCase extends TestCase
 {
     /**
      * @var App|null
@@ -33,33 +35,24 @@ abstract class ApiTestCase extends BaseTestCase
     /**
      * Set up method.
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return void
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function setUp()
     {
         $this->app = require __DIR__ . '/../config/bootstrap.php';
-
-        /**
-         * @var Session
-         */
-        $session = $this->app->getContainer()->get(Session::class);
-        $session->clear();
     }
 
     /**
-     * Tear down method.
+     * Tear down method
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return void
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function tearDown()
     {
-        /**
-         * @var Session
-         */
-        $session = $this->app->getContainer()->get(Session::class);
-        $session->destroy();
         $this->app = null;
     }
 
@@ -68,13 +61,14 @@ abstract class ApiTestCase extends BaseTestCase
      *
      * @param string $method
      * @param string $url
-     *
+     * @param bool $withJwt
+     * @param array $jwtAuthUser
      * @return Request
      */
-    protected function createRequest(string $method, string $url): Request
+    protected function createRequest(string $method, string $url, bool $withJwt = true, $jwtAuthUser = ['users' => 'test_user', 'id' => 1, 'lang' => 'en', 'scope' => '/']): Request
     {
         $env = Environment::mock();
-        $uri = Uri::createFromString($url);
+        $uri = Uri::createFromString('http://localhost' . $url);
         $headers = Headers::createFromEnvironment($env);
         $cookies = [];
         $serverParams = $env->all();
@@ -83,6 +77,12 @@ abstract class ApiTestCase extends BaseTestCase
 
         $request = new Request($method, $uri, $headers, $cookies, $serverParams, $body, $uploadedFiles);
 
+        if ($withJwt) {
+            $secret = $this->getContainer()->get('settings')->get('jwt')['secret'];
+            $token = JWTFactory::generate($jwtAuthUser['users'], $jwtAuthUser['id'], $jwtAuthUser['lang'], $secret, 60 * 60 * 8, $jwtAuthUser['scope']);
+            $request = $request->withHeader('X-Token', $token);
+        }
+
         return $request;
     }
 
@@ -90,18 +90,32 @@ abstract class ApiTestCase extends BaseTestCase
      * Make silent request.
      *
      * @param Request $request
-     *
+     * @return Response
      * @throws Exception
      * @throws MethodNotAllowedException
      * @throws NotFoundException
-     *
-     * @return Response
      */
     protected function request(Request $request): Response
     {
         $container = $this->getContainer();
-        $this->setContainer($container, 'request', $request);
-        $this->setContainer($container, 'response', new Response());
+        $this->setFrozenValueInContainer($container, 'request', $request);
+        $this->setFrozenValueInContainer($container, 'response', new Response());
+        $container[MailerInterface::class] = function () {
+            return new MockMailer();
+        };
+        $container[Logger::class] = function () {
+            return new MockLogger();
+        };
+        $container[Logger::class . '_request'] = function() {
+            return new MockLogger();
+        };
+        $container[Logger::class . '_error'] = function () {
+            return new MockLogger();
+        };
+        $container[Logger::class . '_debug'] = function () {
+            return new MockLogger();
+        };
+
         $response = $this->app->run(true);
 
         return $response;
@@ -112,11 +126,10 @@ abstract class ApiTestCase extends BaseTestCase
      *
      * @param Container $container
      * @param string $key
-     * @param mixed $value
-     *
-     * @throws ReflectionException
+     * @param $value
+     * @return void
      */
-    protected function setContainer(Container $container, string $key, $value)
+    protected function setFrozenValueInContainer(Container $container, string $key, $value)
     {
         $class = new ReflectionClass(\Pimple\Container::class);
         $property = $class->getProperty('frozen');
@@ -144,7 +157,6 @@ abstract class ApiTestCase extends BaseTestCase
      *
      * @param Request $request
      * @param array $data
-     *
      * @return Request
      */
     protected function withFormData(Request $request, array $data): Request
@@ -162,11 +174,10 @@ abstract class ApiTestCase extends BaseTestCase
     }
 
     /**
-     * Add JSON body to request.
+     * Add JSON body to request
      *
      * @param Request $request
      * @param array $data
-     *
      * @return Request
      */
     protected function withJson(Request $request, array $data): Request

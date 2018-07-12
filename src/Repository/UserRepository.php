@@ -4,7 +4,6 @@
 namespace App\Repository;
 
 
-use App\Repository\Exception\EmptySetException;
 use App\Table\UserTable;
 use Interop\Container\Exception\ContainerException;
 use Slim\Container;
@@ -31,15 +30,14 @@ class UserRepository
      *
      * @param string $username
      * @return string
-     * @throws EmptySetException
      */
-    public function getPasswordByUsername(string $username)
+    public function getPasswordByUsername(string $username): string
     {
         $query = $this->userTable->newSelect();
         $query->select(['password'])->where(['username' => $username]);
         $row = $query->execute()->fetch('assoc');
         if (empty($row)) {
-            throw new EmptySetException(__('Username not found'));
+            return null;
         }
 
         return $row['password'];
@@ -50,16 +48,15 @@ class UserRepository
      *
      * @param string $email
      * @return string
-     * @throws EmptySetException
      */
-    public function getPaswordByEmail(string $email)
+    public function getPaswordByEmail(string $email): string
     {
         $query = $this->userTable->newSelect();
         $query->select(['password'])->where(['email' => $email]);
         $row = $query->execute()->fetch('assoc');
 
         if (empty($row)) {
-            throw new EmptySetException(__('Email not found'));
+            return null;
         }
 
         return $row['password'];

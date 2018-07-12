@@ -12,7 +12,8 @@
     "php-http/curl-client": "^1.7",
     "zendframework/zend-hydrator": "^2.3",
     "zendframework/zend-filter": "^2.7",
-    "zendframework/zend-servicemanager": "^3.3"
+    "zendframework/zend-servicemanager": "^3.3",
+    "d4rkmindz/slim-jwt-auth": "^2.3"
   },
   "require-dev": {
     "robmorgan/phinx": "^0.9.1",
@@ -21,6 +22,12 @@
     "phpunit/dbunit": "^3.0",
     "odan/docblock-checker": "^0.2.0"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:D4rkMindz/slim-jwt-auth.git"
+    }
+  ],
   "autoload": {
     "files": [
       "lib/services.php",

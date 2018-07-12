@@ -29,11 +29,6 @@ class AppController
     protected $response;
 
     /**
-     * @var Segment
-     */
-    protected $session;
-
-    /**
      * @var Router
      */
     protected $router;
@@ -49,11 +44,6 @@ class AppController
     protected $twig;
 
     /**
-     * @var Session
-     */
-    private $sessionHandler;
-
-    /**
      * AppController constructor.
      *
      * @param Container $container
@@ -64,8 +54,6 @@ class AppController
     {
         $this->request = $container->get('request');
         $this->response = $container->get('response');
-        $this->sessionHandler = $container->get(Session::class);
-        $this->session = $this->sessionHandler->getSegment('app');
         $this->router = $container->get('router');
         $this->logger = $container->get(Logger::class);
         $this->twig = $container->get(Twig::class);
@@ -102,35 +90,36 @@ class AppController
         return false;
     }
 
-    /**
-     * Render HTML.
-     *
-     * @param Response $response
-     * @param Request $request
-     * @param string $file
-     * @param array $viewData
-     *
-     * @return ResponseInterface
-     */
-    protected function render(
-        Response $response,
-        Request $request,
-        string $file,
-        array $viewData = []
-    ): ResponseInterface
-    {
-        $extend = [
-            'language' => $request->getAttribute('language'),
-            'page' => __('Home'),
-            'is_logged_in' => $this->session->get('is_logged_in') ?: false,
-            'active' => [
-                'home' => false
-            ]
-        ];
-        $viewData = array_replace_recursive($extend, $viewData);
-
-        return $this->twig->render($response, $file, $viewData);
-    }
+    // Theoretically not required
+//    /**
+//     * Render HTML.
+//     *
+//     * @param Response $response
+//     * @param Request $request
+//     * @param string $file
+//     * @param array $viewData
+//     *
+//     * @return ResponseInterface
+//     */
+//    protected function render(
+//        Response $response,
+//        Request $request,
+//        string $file,
+//        array $viewData = []
+//    ): ResponseInterface
+//    {
+//        $extend = [
+//            'language' => $request->getAttribute('language'),
+//            'page' => __('Home'),
+//            'is_logged_in' => $this->session->get('is_logged_in') ?: false,
+//            'active' => [
+//                'home' => false
+//            ]
+//        ];
+//        $viewData = array_replace_recursive($extend, $viewData);
+//
+//        return $this->twig->render($response, $file, $viewData);
+//    }
 
     /**
      * Return JSON Response.
