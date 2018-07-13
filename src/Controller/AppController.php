@@ -2,36 +2,23 @@
 
 namespace App\Controller;
 
-use Aura\Session\Segment;
-use Aura\Session\Session;
+use App\Factory\JsonResponseFactory;
+use Exception;
+use Http\Client\Common\Exception\ServerErrorException;
 use Interop\Container\Exception\ContainerException;
 use Monolog\Logger;
-use Psr\Http\Message\ResponseInterface;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Slim\Router;
-use Slim\Views\Twig;
 
 /**
- * Class AppController.
+ * Class AppController
  */
 class AppController
 {
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected $jwt;
 
-    /**
-     * @var Response
-     */
-    protected $response;
-
-    /**
-     * @var Router
-     */
-    protected $router;
+    protected $secret;
 
     /**
      * @var Logger
@@ -39,24 +26,77 @@ class AppController
     protected $logger;
 
     /**
-     * @var Twig
-     */
-    protected $twig;
-
-    /**
      * AppController constructor.
      *
      * @param Container $container
-     *
      * @throws ContainerException
      */
     public function __construct(Container $container)
     {
-        $this->request = $container->get('request');
-        $this->response = $container->get('response');
-        $this->router = $container->get('router');
-        $this->logger = $container->get(Logger::class);
-        $this->twig = $container->get(Twig::class);
+        try {
+            $this->jwt = (array)$container->get('jwt_decoded')['data'];
+        } catch (Exception $e) {
+            //do nothing about that
+        }
+        try {
+            $this->logger = $container->get(Logger::class);
+            $this->secret = $container->get('settings')->get('jwt')['secret'];
+        } catch (ContainerException $exception) {
+            throw new ServerErrorException('SERVER ERROR', $container->get('request'), $container->get('response'));
+        }
+    }
+
+    /**
+     * Redirect to main page.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    public function redirectToCeviWeb(Request $request, Response $response): Response
+    {
+        return $response->withRedirect('https://cevi-web.com/');
+    }
+
+    /**
+     * Return JSON Response.
+     *
+     * @param Response $response
+     * @param array $data with optional key message. If message is not defined, message will be "Success"
+     * @param int $status
+     * @param string $message
+     * @return Response
+     */
+    public function json(Response $response, array $data, int $status = 200, string $message = 'Success'): Response
+    {
+        if (empty($data)) {
+            return $this->error($response, __('No data available'), 404);
+        }
+
+        if ($status === 200) {
+            $message = array_key_exists('message', $data) ? $data['message'] : $message;
+        } else {
+            $message = array_key_exists('message', $data) ? $data['message'] : 'Error ' . $status;
+        }
+
+        $responseData = JsonResponseFactory::success($data, $status, $message);
+        return $response->withJson($responseData, $status);
+    }
+
+    /**
+     * Return Error JSON Response
+     *
+     * @param Response $response
+     * @param string $message
+     * @param int $status
+     * @param array $info
+     * @return Response
+     */
+    public function error(Response $response, string $message = null, int $status = 404, array $info = ['message' => 'Not Found']): Response
+    {
+        $message = empty($message) ? __('Not found') : $message;
+        $responseData = JsonResponseFactory::error($info, $status, $message);
+        return $response->withJson($responseData, $status);
     }
 
     /**
@@ -65,73 +105,32 @@ class AppController
      * @param Response $response
      * @param string $url
      * @param int $status
-     *
-     * @return ResponseInterface
+     * @return Response
      */
-    public function redirect(Response $response, string $url, int $status = 301): ResponseInterface
+    public function redirect(Response $response, string $url, int $status = 301): Response
     {
         return $response->withRedirect($url, $status);
     }
 
+
     /**
-     * Check if Request comes from the mobile application.
+     * Get required params for limitation.
      *
      * @param Request $request
-     * @return bool
+     * @return array
      */
-    protected function isRequestedFromMobileApp(Request $request)
+    protected function getLimitationParams(Request $request): array
     {
-        $header = $request->getHeader('X-App');
-        $header = empty($header) ? 'browser' : $header[0];
-        if (strtolower($header) === 'mobile') {
-            return true;
-        }
+        $data = $request->getParams();
+        $params = [];
+        $params['limit'] = (int)array_key_exists('limit', $data) ? $data['limit'] : 1000;
+        $params['page'] = (int)array_key_exists('page', $data) ? $data['limit'] : 1;
 
-        return false;
-    }
+        $params['offset'] = array_key_exists('offset', $data) ? (int)$data['offset'] : null;
+        $page = round($params['offset'] / $params['limit'], 0) + 1;
+        $params['page'] = !empty($params['offset']) ? $page : $params['page'];
 
-    // Theoretically not required
-//    /**
-//     * Render HTML.
-//     *
-//     * @param Response $response
-//     * @param Request $request
-//     * @param string $file
-//     * @param array $viewData
-//     *
-//     * @return ResponseInterface
-//     */
-//    protected function render(
-//        Response $response,
-//        Request $request,
-//        string $file,
-//        array $viewData = []
-//    ): ResponseInterface
-//    {
-//        $extend = [
-//            'language' => $request->getAttribute('language'),
-//            'page' => __('Home'),
-//            'is_logged_in' => $this->session->get('is_logged_in') ?: false,
-//            'active' => [
-//                'home' => false
-//            ]
-//        ];
-//        $viewData = array_replace_recursive($extend, $viewData);
-//
-//        return $this->twig->render($response, $file, $viewData);
-//    }
-
-    /**
-     * Return JSON Response.
-     *
-     * @param Response $response
-     * @param array $data
-     * @param int $status
-     *
-     * @return ResponseInterface
-     */
-    protected function json(Response $response, $data, int $status = 200): ResponseInterface
-    {
-        return $response->withJson($data, $status);
+        unset($params['offset']);
+        return $params;
     }
 }

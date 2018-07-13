@@ -53,3 +53,14 @@ function app(App $inst = null): App
     }
     return $app;
 }
+
+/**
+ * Route function.
+ *
+ * @param callable|array $callback
+ * @return string
+ */
+function route($callback): string
+{
+    return implode(':', (array)$callback);
+}

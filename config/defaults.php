@@ -1,79 +1,73 @@
 <?php
 
-use App\Service\Mail\MailerInterface;
-use Aura\Session\Session;
-use Symfony\Component\Translation\Translator;
-
 $config = [];
 
 $applicationName = 'app_template';
 
 $config = [
-    'displayErrorDetails' => true,
+    'displayErrorDetails' => false,
     'determineRouteBeforeAppMiddleware' => true,
     'addContentLengthHeader' => false,
-];
-
-$config[Session::class] = [
-    'name' => $applicationName,
-    'cache_expire' => 14400,
-];
-
-$config[Translator::class] = [
-    'locale' => 'de_CH',
-    'path' => __DIR__ . '/../resources/locale',
+    'enableCORS' => false,
+    'isProduction' => true,
+    'debug' => true,
 ];
 
 $config['migrations'] = __DIR__ . '/../resources/migrations';
 
-$config['db'] = [
-    'database' => 'wavetrophy',
-    'charset' => 'utf8mb4',
-    'encoding' => 'utf8mb4',
-    'collation' => 'utf8mb4_unicode_ci',
+$config['jwt'] = [
+    'active' => true,
+    'secret' => '',
+    'passthrough' => [
+        '/' => ['GET'],
+        '/v2/users/signup' => ['POST'],
+        '/v2/users/verify' => ['POST'],
+        '/v2/auth' => ['POST'],
+        '/v2/articles/qualities' => ['GET'],
+        '/v2/genders' => ['GET'],
+        '/v2/events' => ['GET'],
+        '/v2/cities' => ['GET'],
+        '/v2/departmentgroups' => ['GET'],
+        '/v2/departments' => ['GET'],
+        '/v2/departments/{department_hash:[0-9]+}' => ['GET'],
+        '/v2/swagger' => ['GET'],
+    ]
 ];
 
-$config['db_test'] = [
-    'database' => 'slim_test',
+// used in Role::checkAllowedRoutes
+$config['allowedPaths'] = [
+    ['path' => '/v2/users/{user_id}', 'methods' => ['GET', 'POST', 'PUT', 'DELETE'],],
+    ['path' => '/v2/departmentgroups', 'methods' => ['GET'],],
+    ['path' => '/v2/cities', 'methods' => ['GET'],],
+    ['path' => '/v2/events', 'methods' => ['GET'],],
+    ['path' => '/v2/user-error', 'methods' => ['GET'],],
+];
+
+$config['db'] = [
+    'database' => 'cevi_web',
     'charset' => 'utf8',
     'encoding' => 'utf8',
     'collation' => 'utf8_unicode_ci',
 ];
 
+$config['language_whitelist'] = [
+    'de' => 'de_CH',
+    'en' => 'en_GB',
+    'fr' => 'fr_CH',
+    'it' => 'it_CH',
+];
+
+$config['mailgun'] = [
+    'from' => '',
+    'apikey' => '',
+    'domain' => '',
+];
+
+// used to render email templates
 $config['twig'] = [
-    'viewPath' => __DIR__ . '/../templates',
+    'viewPath' => __DIR__ . '/../template',
     'cachePath' => __DIR__ . '/../tmp/cache/twig',
     'autoReload' => false,
-    'assetCache' => [
-        'path' => __DIR__ . '/../public/assets',
-        // Cache settings
-        'cache_enabled' => true,
-        'cache_path' => __DIR__ . '/../tmp/cache',
-        'cache_name' => 'assets',
-        'cache_lifetime' => 0,
-    ],
-];
-
-$config['session'] = [
-    'name' => 'app_template',
-    'autorefresh' => true,
-    'lifetime' => '2 hours',
-    'path' => '/', //default
-    'domain' => null, //default
-    'secure' => false, //default
-    'httponly' => false, //default
-];
-
-$config['allowed_routes'] = [
-    'get.landingpage',
-    'get.login',
-    'get.register',
-    'api.authenticate',
-    'notFound',
-];
-
-$config['logger'] = [
-    'main' => 'app',
 ];
 
 return $config;
