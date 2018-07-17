@@ -34,7 +34,7 @@ $config['jwt'] = [
     ]
 ];
 
-// used in Role::checkAllowedRoutes
+// used in Role::checkAllowedRoutes (also allowes placeholder user_id, other placeholders must be created)
 $config['allowedPaths'] = [
     ['path' => '/v2/users/{user_id}', 'methods' => ['GET', 'POST', 'PUT', 'DELETE'],],
     ['path' => '/v2/departmentgroups', 'methods' => ['GET'],],
@@ -44,7 +44,7 @@ $config['allowedPaths'] = [
 ];
 
 $config['db'] = [
-    'database' => 'cevi_web',
+    'database' => 'wavetrophy',
     'charset' => 'utf8',
     'encoding' => 'utf8',
     'collation' => 'utf8_unicode_ci',

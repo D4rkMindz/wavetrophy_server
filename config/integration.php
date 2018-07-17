@@ -1,6 +1,6 @@
 <?php
 
 $config = [];
-$config['db']['database'] = "slim_test";
+$config['db']['database'] = "wavetrophy_test";
 
 return $config;

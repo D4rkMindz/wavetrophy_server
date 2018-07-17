@@ -25,6 +25,27 @@ class Init extends AbstractMigration
         $table->addColumn('map_url', 'string', ['null' => true, 'limit' => 1000, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'coordinate_lon'])->update();
         $table->addColumn('description', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'map_url'])->update();
         $table->save();
+        $table = $this->table("car", ['engine' => "InnoDB", 'encoding' => "utf8mb4", 'collation' => "utf8mb4_unicode_ci", 'comment' => ""]);
+        $table->save();
+        if ($this->table('car')->hasColumn('id')) {
+            $this->table("car")->changeColumn('id', 'integer', ['null' => false, 'limit' => MysqlAdapter::INT_REGULAR, 'precision' => 10, 'identity' => 'enable'])->update();
+        } else {
+            $this->table("car")->addColumn('id', 'integer', ['null' => false, 'limit' => MysqlAdapter::INT_REGULAR, 'precision' => 10, 'identity' => 'enable'])->update();
+        }
+        $table->addColumn('hash', 'string', ['null' => false, 'limit' => 80, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'id'])->update();
+        $table->addColumn('name', 'string', ['null' => false, 'limit' => 45, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'hash'])->update();
+        $table->addColumn('reach', 'decimal', ['null' => false, 'precision' => 5, 'scale' => 2, 'after' => 'name'])->update();
+        $table->addColumn('power_supply', 'string', ['null' => true, 'default' => 'AC', 'limit' => 45, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'comment' => "Either AC or DC charging", 'after' => 'reach'])->update();
+        $table->addColumn('battery_size', 'decimal', ['null' => true, 'precision' => 5, 'scale' => 2, 'comment' => "The size of the battery in KW", 'after' => 'power_supply'])->update();
+        $table->addColumn('power_supply_min', 'decimal', ['null' => true, 'precision' => 5, 'scale' => 2, 'comment' => "The minimum charging rate in KW (eg 3,6)", 'after' => 'battery_size'])->update();
+        $table->addColumn('power_supply_max', 'decimal', ['null' => true, 'precision' => 5, 'scale' => 2, 'comment' => "The maximum charging ratein KW (eg. 22)", 'after' => 'power_supply_min'])->update();
+        $table->addColumn('created_at', 'datetime', ['null' => false, 'default' => 'CURRENT_TIMESTAMP', 'after' => 'power_supply_max'])->update();
+        $table->addColumn('created_by', 'string', ['null' => false, 'limit' => 80, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'created_at'])->update();
+        $table->addColumn('modified_at', 'datetime', ['null' => true, 'after' => 'created_by'])->update();
+        $table->addColumn('modified_by', 'string', ['null' => true, 'limit' => 80, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'modified_at'])->update();
+        $table->addColumn('archived_at', 'datetime', ['null' => true, 'after' => 'modified_by'])->update();
+        $table->addColumn('archived_by', 'string', ['null' => true, 'limit' => 80, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'archived_at'])->update();
+        $table->save();
         $table = $this->table("contact", ['engine' => "InnoDB", 'encoding' => "utf8mb4", 'collation' => "utf8mb4_unicode_ci", 'comment' => ""]);
         $table->save();
         if ($this->table('contact')->hasColumn('id')) {
@@ -36,6 +57,17 @@ class Init extends AbstractMigration
         $table->addColumn('last_name', 'string', ['null' => false, 'limit' => 45, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'first_name'])->update();
         $table->addColumn('phone_number', 'string', ['null' => true, 'limit' => 45, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'last_name'])->update();
         $table->addColumn('mobile_number', 'string', ['null' => true, 'limit' => 45, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'phone_number'])->update();
+        $table->save();
+        $table = $this->table("email_token", ['engine' => "InnoDB", 'encoding' => "utf8mb4", 'collation' => "utf8mb4_unicode_ci", 'comment' => ""]);
+        $table->save();
+        if ($this->table('email_token')->hasColumn('id')) {
+            $this->table("email_token")->changeColumn('id', 'integer', ['null' => false, 'limit' => MysqlAdapter::INT_REGULAR, 'precision' => 10, 'identity' => 'enable'])->update();
+        } else {
+            $this->table("email_token")->addColumn('id', 'integer', ['null' => false, 'limit' => MysqlAdapter::INT_REGULAR, 'precision' => 10, 'identity' => 'enable'])->update();
+        }
+        $table->addColumn('user_hash', 'string', ['null' => false, 'limit' => 80, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'id'])->update();
+        $table->addColumn('token', 'string', ['null' => false, 'limit' => 80, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'user_hash'])->update();
+        $table->addColumn('issued_at', 'datetime', ['null' => false, 'default' => 'CURRENT_TIMESTAMP', 'after' => 'token'])->update();
         $table->save();
         $table = $this->table("event", ['engine' => "InnoDB", 'encoding' => "utf8mb4", 'collation' => "utf8mb4_unicode_ci", 'comment' => ""]);
         $table->save();
@@ -153,6 +185,32 @@ class Init extends AbstractMigration
         $table->addColumn('name', 'string', ['null' => false, 'limit' => 45, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'id'])->update();
         $table->addColumn('level', 'string', ['null' => false, 'limit' => 45, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'name'])->update();
         $table->save();
+        $table = $this->table("team", ['engine' => "InnoDB", 'encoding' => "utf8mb4", 'collation' => "utf8mb4_unicode_ci", 'comment' => ""]);
+        $table->save();
+        if ($this->table('team')->hasColumn('id')) {
+            $this->table("team")->changeColumn('id', 'integer', ['null' => false, 'limit' => MysqlAdapter::INT_REGULAR, 'precision' => 10, 'identity' => 'enable'])->update();
+        } else {
+            $this->table("team")->addColumn('id', 'integer', ['null' => false, 'limit' => MysqlAdapter::INT_REGULAR, 'precision' => 10, 'identity' => 'enable'])->update();
+        }
+        $table->addColumn('car_id', 'integer', ['null' => false, 'limit' => MysqlAdapter::INT_REGULAR, 'precision' => 10, 'after' => 'id'])->update();
+        $table->addColumn('group_id', 'integer', ['null' => false, 'limit' => MysqlAdapter::INT_REGULAR, 'precision' => 10, 'after' => 'car_id'])->update();
+        $table->addColumn('hash', 'string', ['null' => false, 'limit' => 80, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'group_id'])->update();
+        $table->addColumn('name', 'string', ['null' => false, 'limit' => 45, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'hash'])->update();
+        $table->addColumn('created_at', 'datetime', ['null' => false, 'default' => 'CURRENT_TIMESTAMP', 'after' => 'name'])->update();
+        $table->addColumn('created_by', 'string', ['null' => false, 'limit' => 80, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'created_at'])->update();
+        $table->addColumn('modified_at', 'datetime', ['null' => true, 'after' => 'created_by'])->update();
+        $table->addColumn('modified_by', 'string', ['null' => true, 'limit' => 80, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'modified_at'])->update();
+        $table->addColumn('archived_at', 'datetime', ['null' => true, 'after' => 'modified_by'])->update();
+        $table->addColumn('archived_by', 'string', ['null' => true, 'limit' => 80, 'collation' => "utf8mb4_unicode_ci", 'encoding' => "utf8mb4", 'after' => 'archived_at'])->update();
+        $table->save();
+        if($this->table('team')->hasIndex('fk_team_car1_idx')) {
+            $this->table("team")->removeIndexByName('fk_team_car1_idx');
+        }
+        $this->table("team")->addIndex(['car_id'], ['name' => "fk_team_car1_idx", 'unique' => false])->save();
+        if($this->table('team')->hasIndex('fk_team_group1_idx')) {
+            $this->table("team")->removeIndexByName('fk_team_group1_idx');
+        }
+        $this->table("team")->addIndex(['group_id'], ['name' => "fk_team_group1_idx", 'unique' => false])->save();
         $table = $this->table("user", ['engine' => "InnoDB", 'encoding' => "utf8mb4", 'collation' => "utf8mb4_unicode_ci", 'comment' => ""]);
         $table->save();
         if ($this->table('user')->hasColumn('id')) {

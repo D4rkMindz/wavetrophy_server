@@ -1,47 +1,16 @@
 <?php
 
-use Slim\Http\Request;
-
-/**
- * Handling email
- *
- * This function is shortening for filter_var.
- *
- * @see filter_var()
- *
- * @param string $email to check
- *
- * @return mixed
- */
-function is_email(string $email): bool
-{
-    return filter_var($email, FILTER_VALIDATE_EMAIL);
-}
-
-
-/**
- * Check if Request comes from the mobile application.
- *
- * @param Request $request
- * @return bool
- */
-function isRequestedFromMobileApp(Request $request)
-{
-    $header = $request->getHeader('X-App');
-    $header = empty($header) ? 'browser' : $header[0];
-    if (strtolower($header) === 'mobile') {
-        return true;
-    }
-
-    return false;
-}
-
 /**
  * Get base url.
  *
  * @param string $path
  * @return mixed|string
  */
+function is_email(string $email): bool
+{
+    return filter_var($email, FILTER_VALIDATE_EMAIL);
+}
+
 function baseurl($path = '')
 {
     $environment = container()->get('environment');
@@ -50,4 +19,22 @@ function baseurl($path = '')
     $result = str_replace('\\', '/', $baseUri) . $path;
     $result = str_replace('//', '/', $result);
     return $result;
+}
+
+function preg_replace_array($pattern, $replacement, $subject, $limit = -1)
+{
+    if (is_array($subject)) {
+        foreach ($subject as &$value) $value = preg_replace_array($pattern, $replacement, $value, $limit);
+        return $subject;
+    } else {
+        return preg_replace($pattern, $replacement, $subject, $limit);
+    }
+}
+
+function array_value(string $key, array $array)
+{
+    if (array_key_exists($key, $array)) {
+        return $array[$key];
+    }
+    return null;
 }

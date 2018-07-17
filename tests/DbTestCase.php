@@ -250,7 +250,7 @@ abstract class DbTestCase extends ApiTestCase
              * @var $connection Connection
              */
             $connection = $this->app->getContainer()->get(Connection::class);
-            $pdo = $connection->getDriver()->getConnection();
+            $pdo = $connection->getDriver()->connection();
             self::$pdo = $pdo;
         }
 
