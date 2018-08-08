@@ -4,7 +4,7 @@
 namespace App\Table;
 
 
-class UserTable extends AbstractTable
+class UserTable extends AppTable
 {
     protected $table = 'user';
 }

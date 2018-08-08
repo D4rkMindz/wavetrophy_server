@@ -7,9 +7,9 @@ use Cake\Database\Query;
 use Cake\Database\StatementInterface;
 
 /**
- * Class AbstractTable.
+ * Class AppTable.
  */
-abstract class AbstractTable implements TableInterface
+abstract class AppTable implements TableInterface
 {
     protected $table = null;
 
@@ -40,15 +40,52 @@ abstract class AbstractTable implements TableInterface
     /**
      * Get all entries from database.
      *
+     * @param int $limit
+     * @param int $page
      * @return array $rows
      */
-    public function getAll(): array
+    public function getAll(int $limit = 1000, $page = 1): array
     {
         $query = $this->newSelect();
-        $query->select('*');
+        $query->select('*')->limit($limit)->page($page);
         $rows = $query->execute()->fetchAll('assoc');
 
+        if (empty($rows)) {
+            return [];
+        }
+
+        foreach ($rows as $key => $row) {
+            $rows[$key] = $this->unsetRowID($row);
+        }
+
         return $rows;
+    }
+
+    /**
+     * Get entry by hash.
+     *
+     * @param string $hash
+     * @return array
+     */
+    public function getByHash(string $hash): array
+    {
+        $query = $this->newSelect();
+        $query->select('*')->where(['hash' => $hash]);
+        $row = $query->execute()->fetchAll('assoc');
+
+        if (empty($row)) {
+            return [];
+        }
+
+        return $this->unsetRowID($row);
+    }
+
+    private function unsetRowID(array $singleRow)
+    {
+        if (array_key_exists('id', $singleRow)) {
+            unset($singleRow['id']);
+        }
+        return $singleRow;
     }
 
     /**
@@ -66,17 +103,16 @@ abstract class AbstractTable implements TableInterface
     /**
      * Update database.
      *
-     * @param string $where should be the id
      * @param array $row
-     *
+     * @param array $where The where condition
      * @return StatementInterface
      */
-    public function update(array $row, string $where): StatementInterface
+    public function modify(array $row, array $where): StatementInterface
     {
         $query = $this->connection->newQuery();
         $query->update($this->table)
             ->set($row)
-            ->where(['id' => $where]);
+            ->where($where);
 
         return $query->execute();
     }
