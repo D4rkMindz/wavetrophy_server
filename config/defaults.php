@@ -5,7 +5,7 @@ $config = [];
 $applicationName = 'app_template';
 
 $config = [
-    'displayErrorDetails' => false,
+    'displayErrorDetails' => true,
     'determineRouteBeforeAppMiddleware' => true,
     'addContentLengthHeader' => false,
     'enableCORS' => false,
@@ -16,7 +16,7 @@ $config = [
 $config['migrations'] = __DIR__ . '/../resources/migrations';
 
 $config['jwt'] = [
-    'active' => true,
+    'active' => false,
     'secret' => '',
     'passthrough' => [
         '/' => ['GET'],
@@ -68,6 +68,10 @@ $config['twig'] = [
     'viewPath' => __DIR__ . '/../template',
     'cachePath' => __DIR__ . '/../tmp/cache/twig',
     'autoReload' => false,
+];
+
+$config['logger'] = [
+    'logDir' => __DIR__  . '/../tmp/logs',
 ];
 
 return $config;

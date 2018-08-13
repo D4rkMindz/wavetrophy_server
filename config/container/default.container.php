@@ -6,6 +6,7 @@ use Aura\Session\SessionFactory;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Interop\Container\Exception\ContainerException;
+use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Odan\Twig\TwigAssetsExtension;
 use Odan\Twig\TwigTranslationExtension;
@@ -37,7 +38,6 @@ $container['environment'] = function (): Environment {
  *
  * @param Container $container
  * @return Twig
- * @throws ContainerException
  */
 $container[Twig::class] = function (Container $container): Twig {
     $twigSettings = $container->get('settings')->get('twig');
@@ -58,7 +58,6 @@ $container[Twig::class] = function (Container $container): Twig {
  *
  * @param Container $container
  * @return Translator $translator
- * @throws ContainerException
  */
 $container[Translator::class] = function (Container $container): Translator {
     $settings = $container->get('settings')->get(Translator::class);
@@ -74,7 +73,6 @@ $container[Translator::class] = function (Container $container): Translator {
  *
  * @param Container $container
  * @return Connection
- * @throws ContainerException
  */
 $container[Connection::class] = function (Container $container): Connection {
     $config = $container->get('settings')->get('db');
@@ -111,10 +109,23 @@ $container[Connection::class] = function (Container $container): Connection {
  *
  * @param Container $container
  * @return Logger
- * @throws ContainerException
  */
 $container[Monolog\Logger::class] = function (Container $container) {
-    return new Logger($container->get('settings')->get('logger')['main']);
+    $fileName = $container->get('settings')->get('logger')['logDir'] . '/' . date('Y-m-d'). '_request.log';
+    $handler = new RotatingFileHandler($fileName);
+    return new Logger('app', [$handler]);
+};
+
+/**
+ * Request Logger container.
+ *
+ * @param Container $container
+ * @return Logger
+ */
+$container[Monolog\Logger::class . '_request'] = function (Container $container) {
+    $fileName = $container->get('settings')->get('logger')['logDir'] . '/' . date('Y-m-d'). '_request.log';
+    $handler = new RotatingFileHandler($fileName);
+    return new Logger('app.request', [$handler]);
 };
 
 /**
@@ -127,14 +138,4 @@ $container['notFoundHandler'] = function (Container $container) {
     return function (Request $request, Response $response) use ($container) {
         return $response->withRedirect($container->get('router')->pathFor('notFound', ['language' => 'en']));
     };
-};
-
-/**
- * Authentication validation container.
- *
- * @param Container $container
- * @return AuthenticationValidation
- */
-$container[AuthenticationValidation::class] = function (Container $container) {
-    return new AuthenticationValidation($container);
 };

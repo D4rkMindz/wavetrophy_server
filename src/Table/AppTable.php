@@ -9,8 +9,9 @@ use Cake\Database\StatementInterface;
 /**
  * Class AppTable.
  */
-abstract class AppTable implements TableInterface
+abstract class AppTable
 {
+    // TODO reimplement TableInterface
     protected $table = null;
 
     protected $connection = null;
@@ -30,11 +31,32 @@ abstract class AppTable implements TableInterface
     /**
      * Get Query.
      *
+     * @param bool $includeArchived
      * @return Query
      */
-    public function newSelect(): Query
+    public function newSelect(bool $includeArchived = false): Query
     {
-        return $this->connection->newQuery()->from($this->table);
+        if ($includeArchived) {
+            return $this->connection->newQuery()->from($this->table);
+        }
+        return $this->connection->newQuery()->from($this->table)->where(
+            [
+                'OR' => [
+                    [$this->table . '.archived_at >= ' => date('Y-m-d H:i:s')],
+                    [$this->table . '.archived_at IS NULL'],
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Get table name
+     *
+     * @return string
+     */
+    public function getTablename()
+    {
+        return $this->table;
     }
 
     /**
@@ -105,10 +127,13 @@ abstract class AppTable implements TableInterface
      *
      * @param array $row
      * @param array $where The where condition
+     * @param string $userHash
      * @return StatementInterface
      */
-    public function modify(array $row, array $where): StatementInterface
+    public function modify(array $row, array $where,string $userHash): StatementInterface
     {
+        $row['modified_at'] = date('Y-m-d H:i:s');
+        $row['modified_by'] = $userHash;
         $query = $this->connection->newQuery();
         $query->update($this->table)
             ->set($row)

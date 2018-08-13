@@ -1,5 +1,6 @@
 <?php
 
+use App\Repository\GroupRepository;
 use App\Repository\TrophyRepository;
 use App\Repository\UserRepository;
 use Slim\Container;
@@ -24,4 +25,14 @@ $container[UserRepository::class] = function (Container $container) {
  */
 $container[TrophyRepository::class] = function (Container $container) {
     return new TrophyRepository($container);
+};
+
+/**
+ * Trohpy Group Repository container.
+ *
+ * @param Container $container
+ * @return GroupRepository
+ */
+$container[GroupRepository::class] = function (Container $container) {
+    return new GroupRepository($container);
 };

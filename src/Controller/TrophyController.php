@@ -56,7 +56,7 @@ class TrophyController extends AppController
                 JSONResponse::error(
                     InternalErrorCode::ELEMENT_NOT_FOUND,
                     [],
-                    __('No WaveTrohpies found'),
+                    __('No WaveTrophies found'),
                     404,
                     HttpMessage::CODE404
                 )
@@ -83,7 +83,7 @@ class TrophyController extends AppController
                 JSONResponse::error(
                     InternalErrorCode::ELEMENT_NOT_FOUND,
                     [],
-                    __('No WaveTrohpy found'),
+                    __('No WaveTrophy found'),
                     404,
                     HttpMessage::CODE404
                 )

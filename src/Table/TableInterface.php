@@ -48,10 +48,10 @@ interface TableInterface
     /**
      * Get entity by id.
      *
-     * @param int $id
+     * @param $hash
      * @return array
      */
-    public function getById($id): array;
+    public function getByHash(string $hash): array;
 
     /**
      * Insert into database.
@@ -60,17 +60,17 @@ interface TableInterface
      * @param string $id
      * @return string last inserted ID
      */
-    public function insert(array $row, string $id): string;
+    public function insert(array $row): StatementInterface;
 
     /**
      * Update database
      *
      * @param array $row
-     * @param string $where should be the id
-     * @param string $userId
+     * @param array $where should be the id
+     * @param string $userHash
      * @return StatementInterface
      */
-    public function modify(array $row, array $where, string $userId): bool;
+    public function modify(array $row, array $where, string $userHash): StatementInterface;
 
     /**
      * Delete from database.

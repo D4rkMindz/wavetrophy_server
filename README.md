@@ -90,7 +90,7 @@ The server provides several endpoints to get the data.
 - *GET /v1/trophies/{trophy_hash}* to get all information about the given WAVETROPHY
 - *GET /v1/trophies/{trophy_hash}/contacts* to get all important contacts of the given WAVETROPHY
 - *GET /v1/trophies/{trophy_hash}/events* to get all events of a WAVETROPHY
-- *GET /v1/trophies/{trophy_hash}/events/{event_hash}/* to get all information about a WAVETROHPY event
+- *GET /v1/trophies/{trophy_hash}/events/{event_hash}/* to get all information about a WAVETROPHY event
 - *GET /v1/trophies/{trophy_hash}/groups* to get all groups of the given WAVETROPHY
 - *GET /v1/trophies/{trophy_hash}/groups/{group_hash}* to get all information about the given WAVETROPHY group
 
