@@ -1,13 +1,5 @@
 <?php
-
-/**
- * Authentication route
- */
-$app->post('/v2/auth', route(['App\Controller\AuthenticationController', 'authenticateAction']))->setName('api.post.auth');
-
-/***********************************************************************************************************************
- * Users routes
- */
-$app->get('/v2/users', route(['App\Controller\UserController', 'getAllUsersAction']))->setName('api.get.users');
-$app->post('/v2/users/signup', route(['App\Controller\UserController', 'signupAction']))->setName('api.post.users.signup');
-$app->post('/v2/users/verify', route(['App\Controller\UserController', 'verifyEmailAction']))->setName('api.post.users.verify');
+$app->get('/', 'App\Controller\IndexController:indexAction')->setName('api.get.root');
+$app->post('/v1/auth', 'App\Controller\AuthenticationController:authenticateAction')->setName('api.post.v1.auth');
+$app->get('/v1/trophies', 'App\Controller\TrophyController:getTrophiesAction')->setName('api.get.v1.trophies');
+$app->get('/v1/trophies/{trophy_hash}', 'App\Controller\TrophyController:getTrophyAction')->setName('api.get.v1.trophies.single');

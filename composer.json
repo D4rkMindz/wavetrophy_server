@@ -13,7 +13,8 @@
     "zendframework/zend-hydrator": "^2.3",
     "zendframework/zend-filter": "^2.7",
     "zendframework/zend-servicemanager": "^3.3",
-    "d4rkmindz/slim-jwt-auth": "^2.3"
+    "d4rkmindz/slim-jwt-auth": "^2.3",
+    "ramsey/uuid": "^3.8"
   },
   "require-dev": {
     "robmorgan/phinx": "^0.9.1",

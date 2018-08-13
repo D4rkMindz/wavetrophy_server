@@ -1,19 +1,10 @@
-# Gracili
-
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/D4rkMindz/gracili/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/D4rkMindz/gracili/?branch=master)
-[![Build Status](https://travis-ci.org/D4rkMindz/gracili.svg?branch=master)](https://travis-ci.org/D4rkMindz/gracili)
-[![Code Coverage](https://scrutinizer-ci.com/g/D4rkMindz/gracili/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/D4rkMindz/gracili/?branch=master)
+# Wavetrophy server
 
 ----
 
-## What is Gracili?
-
-Gracili is a PHP Application Template to quickly create a new Project.
-Using this template can save you a lot of time. With the [Slim PHP](https://www.slimframework.com/) Framework is a fast and simple base provided to easily extend your application to grow with the required workload.
-
 ## Installation
 
-Download the [latest version](https://github.com/D4rkMindz/gracili/releases) of Gracili and extract it to the [XAMPP](https://www.apachefriends.org/index.html) htdocs-folder.
+Download the [latest version](https://github.com/D4rkMindz/wavetrophy_server/releases) of Gracili and extract it to the [XAMPP](https://www.apachefriends.org/index.html) htdocs-folder.
 You need to run the [composer](https://getcomposer.org) installation command once after the extraction to install all required libraries
 
 ```bash
@@ -88,6 +79,21 @@ class MyTest
   // PHPUnit Test here ...
 }
 ```
+
+## Endpoints
+
+TODO - improve documentation
+The server provides several endpoints to get the data.
+
+- *POST /v1/auth* for authentication
+- *GET /v1/trophies* to get all WAVETROPHY rallies
+- *GET /v1/trophies/{trophy_hash}* to get all information about the given WAVETROPHY
+- *GET /v1/trophies/{trophy_hash}/contacts* to get all important contacts of the given WAVETROPHY
+- *GET /v1/trophies/{trophy_hash}/events* to get all events of a WAVETROPHY
+- *GET /v1/trophies/{trophy_hash}/events/{event_hash}/* to get all information about a WAVETROHPY event
+- *GET /v1/trophies/{trophy_hash}/groups* to get all groups of the given WAVETROPHY
+- *GET /v1/trophies/{trophy_hash}/groups/{group_hash}* to get all information about the given WAVETROPHY group
+
 
 ## Built with
 
