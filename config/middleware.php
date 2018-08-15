@@ -77,7 +77,7 @@ if ($jwt['active']) {
             // todo disable useless logging
             $container->get(\Monolog\Logger::class)->info(sprintf('[%s] %s checking permission ...', $method, $path));
             $permission = new Permissions();
-            $userId = $decoded['data']->user_id;
+            $userId = $decoded['data']->user_hash;
             $level = $permission->{strtolower($method)};
             // return true if the user has the correct permission
             return $container->get(Role::class)->hasPermission($level, $userId, $path, $method);

@@ -187,21 +187,21 @@ class UserRepository extends AppRepository
     /**
      * Get permission.
      *
-     * @param string $userId
+     * @param string $userHash
      * @return array
      */
-    public function getPermission(string $userId): array
+    public function getPermission(string $userHash): array
     {
         $permissionTablename = $this->permissionTable->getTablename();
         $userTableName = $this->userTable->getTablename();
 
         $fields = [
-            'id' => $permissionTablename . '.id',
+            'hash' => $permissionTablename . '.hash',
             'level' => $permissionTablename . '.level',
         ];
 
         $query = $this->userTable->newSelect();
-        $query->select($fields)->where([$userTableName . '.id' => $userId])->join([
+        $query->select($fields)->where([$userTableName . '.hash' => $userHash])->join([
             [
                 'table' => $permissionTablename,
                 'type' => 'INNER',
@@ -507,13 +507,6 @@ class UserRepository extends AppRepository
 
         $fields = [
             'hash' => $userTableName . '.hash',
-            'department_hash' => $userTableName . '.department_hash',
-            'department_name' => $departmentTableName . '.name',
-            'gender_hash' => $userTableName . '.gender_hash',
-            'gender_name_de' => $genderTableName . '.name_de',
-            'gender_name_en' => $genderTableName . '.name_en',
-            'gender_name_fr' => $genderTableName . '.name_fr',
-            'gender_name_it' => $genderTableName . '.name_it',
             'position_hash' => $userTableName . '.position_hash',
             'position_name_de' => $positionTableName . '.name_de',
             'position_name_en' => $positionTableName . '.name_en',

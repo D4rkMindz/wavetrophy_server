@@ -12,3 +12,4 @@ Example:
 | 3 | Added trophy and updated table schema |
 | 9 | Added notifications |
 | 3 | Created settings and popover in stream |
+| 6 | Created API GETTER basics |
