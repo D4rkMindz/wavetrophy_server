@@ -115,11 +115,18 @@ abstract class AppTable
      *
      * @param array $row with data to insertUser into database
      *
-     * @return StatementInterface
+     * @param string $userHash
+     * @return string The last inserted hash.
      */
-    public function insert(array $row): StatementInterface
+    public function insert(array $row, string $userHash): string
     {
-        return $this->connection->insert($this->table, $row);
+        $row['created_at'] = date('Y-m-d H:i:s');
+        $row['created_by'] = $userHash;
+        $inserted = $this->connection->insert($this->table, $row);
+        if ($inserted) {
+            return array_value('hash', $row) ?: true;
+        }
+        return null;
     }
 
     /**

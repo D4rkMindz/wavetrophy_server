@@ -27,3 +27,5 @@ $app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/stream', rout
  * Get contacts for WaveTrophy
  */
 $app->get('/v1/trophies/{wavetrophy_hash}/contacts', route(['App\Controller\ContactController', 'getContactsAction']))->setName('api.get.v1.trophies.single.contacts');
+
+$app->post('/v1/trophies/{wavetrophy_hash}/contacts', route(['App\Controller\ContactController', 'createContactAction']))->setName('api.post.v1.trophies.single.contacts');

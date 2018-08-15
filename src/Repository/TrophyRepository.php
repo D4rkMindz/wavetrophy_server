@@ -50,6 +50,20 @@ class TrophyRepository
     }
 
     /**
+     * Check if trophy exists
+     *
+     * @param string $trophyHash
+     * @return bool
+     */
+    public function existsTrophy(string $trophyHash): bool
+    {
+        $query = $this->trophyTable->newSelect();
+        $query->select(1)->where(['hash' => $trophyHash]);
+        $row = $query->execute()->fetch();
+        return !empty($row);
+    }
+
+    /**
      * Create trophy.
      *
      * @param string $name
@@ -63,14 +77,8 @@ class TrophyRepository
             'hash' => UUID::generate(),
             'name' => $name,
             'country' => $country,
-            'created_by' => $userHash,
         ];
-        $inserted = $this->trophyTable->insert($row);
-
-        if ($inserted) {
-            return $row['hash'];
-        }
-        return null;
+        return $this->trophyTable->insert($row, $userHash);
     }
 
     /**

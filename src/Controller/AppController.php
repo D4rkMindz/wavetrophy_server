@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use App\Factory\JsonResponseFactory;
+use App\Service\Response\HttpMessage;
+use App\Service\Response\InternalErrorCode;
+use App\Service\Response\JSONResponse;
+use App\Util\ValidationContext;
 use Exception;
 use Http\Client\Common\Exception\ServerErrorException;
 use Interop\Container\Exception\ContainerException;
@@ -90,13 +94,43 @@ class AppController
      * @param string $message
      * @param int $status
      * @param array $info
+     * @param null|string $httpMessage
      * @return Response
      */
-    public function error(Response $response, string $message = null, int $status = 404, array $info = ['message' => 'Not Found']): Response
+    public function error(Response $response, string $message = null, int $status = 404, ?array $info = ['message' => 'Not Found'], ?string $httpMessage = HttpMessage::CODE404): Response
     {
-        $message = empty($message) ? __('Not found') : $message;
-        $responseData = JsonResponseFactory::error($info, $status, $message);
-        return $response->withJson($responseData, $status);
+
+        return $this->json(
+            $response,
+            JSONResponse::error(
+                InternalErrorCode::ELEMENT_NOT_FOUND,
+                $info,
+                $message,
+                $status,
+                HttpMessage::CODE404
+            )
+        );
+    }
+
+    /**
+     * Return Error JSON Response from Validation Context
+     *
+     * @param Response $response
+     * @param ValidationContext $validationContext
+     * @return Response
+     */
+    public function errorFromValidationContext(Response $response, ValidationContext $validationContext)
+    {
+        return $this->json(
+            $response,
+            JSONResponse::error(
+                InternalErrorCode::VALUE_NOT_VALID,
+                $validationContext->getErrors(),
+                $validationContext->getMessage(),
+                422,
+                HttpMessage::CODE422
+            )
+        );
     }
 
     /**

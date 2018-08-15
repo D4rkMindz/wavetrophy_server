@@ -61,7 +61,7 @@ class JSONResponse
             ],
         ];
         if (!empty($errors)) {
-            $response['errors'] = $errors;
+            $response['validation'] = $errors;
         }
         return $response;
     }
