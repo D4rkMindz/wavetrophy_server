@@ -22,3 +22,8 @@ $app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}', 'App\Contro
  * Get stream of groups
  */
 $app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/stream', route(['App\Controller\StreamController', 'getStreamAction']))->setName('api.get.v1.trophies.single.groups.single.stream');
+
+/**
+ * Get contacts for WaveTrophy
+ */
+$app->get('/v1/trophies/{wavetrophy_hash}/contacts', route(['App\Controller\ContactController', 'getContactsAction']))->setName('api.get.v1.trophies.single.contacts');

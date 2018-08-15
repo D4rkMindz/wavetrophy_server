@@ -3,6 +3,7 @@
 use App\Table\AddressImageTable;
 use App\Table\AddressTable;
 use App\Table\CarTable;
+use App\Table\ContactTable;
 use App\Table\EventImageTable;
 use App\Table\EventTable;
 use App\Table\GroupTable;
@@ -44,6 +45,16 @@ $container[AddressTable::class] = function (Container $container) {
  */
 $container[CarTable::class] = function (Container $container) {
     return new CarTable($container->get(Connection::class));
+};
+
+/**
+ * ContactTable container.
+ *
+ * @param Container $container
+ * @return ContactTable
+ */
+$container[ContactTable::class] = function (Container $container) {
+    return new ContactTable($container->get(Connection::class));
 };
 
 /**

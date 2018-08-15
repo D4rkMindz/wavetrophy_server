@@ -1,5 +1,6 @@
 <?php
 
+use App\Repository\ContactRepository;
 use App\Repository\GroupRepository;
 use App\Repository\StreamRepository;
 use App\Repository\TrophyRepository;
@@ -44,4 +45,13 @@ $container[GroupRepository::class] = function (Container $container) {
  * @return StreamRepository */
 $container[StreamRepository::class] = function (Container $container) {
     return new StreamRepository($container);
+};
+
+/**
+ * Trohpy Contact Repository container.
+ *
+ * @param Container $container
+ * @return ContactRepository */
+$container[ContactRepository::class] = function (Container $container) {
+    return new ContactRepository($container);
 };
