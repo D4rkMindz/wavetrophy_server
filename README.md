@@ -87,12 +87,12 @@ The server provides several endpoints to get the data.
 
 - *POST /v1/auth* for authentication
 - *GET /v1/trophies* to get all WAVETROPHY rallies
-- *GET /v1/trophies/{trophy_hash}* to get all information about the given WAVETROPHY
-- *GET /v1/trophies/{trophy_hash}/contacts* to get all important contacts of the given WAVETROPHY
-- *GET /v1/trophies/{trophy_hash}/events* to get all events of a WAVETROPHY
-- *GET /v1/trophies/{trophy_hash}/events/{event_hash}/* to get all information about a WAVETROPHY event
-- *GET /v1/trophies/{trophy_hash}/groups* to get all groups of the given WAVETROPHY
-- *GET /v1/trophies/{trophy_hash}/groups/{group_hash}* to get all information about the given WAVETROPHY group
+- *GET /v1/trophies/{wavetrophy_hash}* to get all information about the given WAVETROPHY
+- *GET /v1/trophies/{wavetrophy_hash}/contacts* to get all important contacts of the given WAVETROPHY
+- *GET /v1/trophies/{wavetrophy_hash}/events* to get all events of a WAVETROPHY
+- *GET /v1/trophies/{wavetrophy_hash}/events/{event_hash}/* to get all information about a WAVETROPHY event
+- *GET /v1/trophies/{wavetrophy_hash}/groups* to get all groups of the given WAVETROPHY
+- *GET /v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}* to get all information about the given WAVETROPHY group
 
 
 ## Built with

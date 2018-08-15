@@ -14,17 +14,13 @@ class EventRepository extends AppRepository
      */
     private $eventTable;
 
+    /**
+     * EventRepository constructor.
+     * @param Container $container
+     * @throws \Interop\Container\Exception\ContainerException
+     */
     public function __construct(Container $container)
     {
         $this->eventTable = $container->get(EventTable::class);
-    }
-
-    public function getAllOrderedByLocation($waveHash, $groupHash)
-    {
-        $query = $this->eventTable->newSelect();
-        $fields = [];
-        $query->select($fields)
-            ->where([])
-            // TODO continue here
     }
 }

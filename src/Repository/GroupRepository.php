@@ -50,7 +50,7 @@ class GroupRepository extends AppRepository
             ->where(['wavetrophy_hash' => $trophyHash])
             ->limit($limit)
             ->page($page);
-        $rows = $query->execute();
+        $rows = $query->execute()->fetchAll('assoc');
         return $rows ?: [];
     }
 
@@ -76,7 +76,7 @@ class GroupRepository extends AppRepository
         $query = $this->groupTable->newSelect();
         $query->select($fields)
             ->where(['wavetrophy_hash' => $trophyHash, 'hash' => $groupHash]);
-        $row = $query->execute();
+        $row = $query->execute()->fetchAll('assoc');
         return $row ?: [];
     }
 }

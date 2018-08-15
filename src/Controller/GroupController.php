@@ -36,7 +36,7 @@ class GroupController extends AppController
      */
     public function getGroupsAction(Request $request, Response $response, array $args): ResponseInterface
     {
-        $groups = $this->groupRepository->getAllGroups($args['trophy_hash']);
+        $groups = $this->groupRepository->getAllGroups($args['wavetrophy_hash']);
         if (empty($groups)) {
             return $this->json(
                 $response,
@@ -61,7 +61,7 @@ class GroupController extends AppController
      */
     public function getGroupAction(Request $request, Response $response, array $args): ResponseInterface
     {
-        $group = $this->groupRepository->getGroup($args['trophy_hash'], $args['group_hash']);
+        $group = $this->groupRepository->getGroup($args['wavetrophy_hash'], $args['road_group_hash']);
 
         if (empty($group)) {
             return $this->json(

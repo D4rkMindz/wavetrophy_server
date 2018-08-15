@@ -1,6 +1,7 @@
 <?php
 
 use App\Repository\GroupRepository;
+use App\Repository\StreamRepository;
 use App\Repository\TrophyRepository;
 use App\Repository\UserRepository;
 use Slim\Container;
@@ -31,8 +32,16 @@ $container[TrophyRepository::class] = function (Container $container) {
  * Trohpy Group Repository container.
  *
  * @param Container $container
- * @return GroupRepository
- */
+ * @return GroupRepository */
 $container[GroupRepository::class] = function (Container $container) {
     return new GroupRepository($container);
+};
+
+/**
+ * Trohpy Stream Repository container.
+ *
+ * @param Container $container
+ * @return StreamRepository */
+$container[StreamRepository::class] = function (Container $container) {
+    return new StreamRepository($container);
 };

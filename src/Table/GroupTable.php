@@ -7,5 +7,5 @@ namespace App\Table;
  */
 class GroupTable extends AppTable
 {
-    protected $table = 'group';
+    protected $table = 'road_group';
 }

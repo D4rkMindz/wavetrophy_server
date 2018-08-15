@@ -75,7 +75,7 @@ class TrophyController extends AppController
      */
     public function getTrophyAction(Request $request, Response $response, array $args): ResponseInterface
     {
-        $trophy = $this->trophyRepository->getTrohpy($args['trophy_hash']);
+        $trophy = $this->trophyRepository->getTrohpy($args['wavetrophy_hash']);
 
         if (empty($trophy)) {
             return $this->json(

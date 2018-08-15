@@ -409,7 +409,7 @@ abstract class DbTestCase extends ApiTestCase
     {
         $array = preg_replace_array('/{article_hash}/', $this->articleHash, $array);
         $array = preg_replace_array('/{department_hash}/', $this->departmentHash, $array);
-        $array = preg_replace_array('/{department_group_hash}/', $this->departmentGroupHash, $array);
+        $array = preg_replace_array('/{department_road_group_hash}/', $this->departmentGroupHash, $array);
         $array = preg_replace_array('/{department_region_hash}/', $this->departmentRegionHash, $array);
         $array = preg_replace_array('/{department_type_hash}/', $this->departmentTypeHash, $array);
         $array = preg_replace_array('/{educational_course_hash}/', $this->educationalCourseHash, $array);
