@@ -31,7 +31,7 @@ The Gracili Application Template is build on the [MVC Design Pattern](https://de
 | `public/`         | Static accessible web files (images, css, fonts, etc.)                                                                                 |
 | `resources/`      | Other resources, that should not be public (migrations or translations)                                                                |
 | `src/`            | All PHP source code (The App namespace)                                                                                                |
-| `src/Controller/` | Directory for all Controllers (one per 'page')                                                                                         |
+| `src/Controller/` | Directory for all Controllers (one pe§r 'page')                                                                                         |
 | `src/Datarow/`    | Classes for the Database sets that are returend and hydrated (one per 'select')                                                        |
 | `src/Service/`    | All services for the businesslogic are here. It is recommended to structure it [modular](https://en.wikipedia.org/wiki/Modular_design) |
 | `src/Table/`      | The classes for the database queries (one per 'table')                                                                                 |
