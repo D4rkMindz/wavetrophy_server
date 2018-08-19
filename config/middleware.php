@@ -102,7 +102,7 @@ if ($jwt['active']) {
             $errorMessage = JsonResponseFactory::error(['message' => $message['message']]);
             return $response->withStatus(403)->withJson($errorMessage);
         },
-        'rules' => [new PassthroughRule($container)],
+//        'rules' => [new PassthroughRule($container)],
     ]));
 }
 
