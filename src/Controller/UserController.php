@@ -56,9 +56,7 @@ class UserController extends AppController
     {
         parent::__construct($container);
         $this->userRepository = $container->get(UserRepository::class);
-        $this->languageRepository = $container->get(LanguageRepository::class);
         $this->userValidation = $container->get(UserValidation::class);
-        $this->mailer = $container->get(MailerInterface::class);
         $this->twig = $container->get(Twig_Environment::class);
         $this->isProduction = $container->get('settings')->get('isProduction');
     }
@@ -108,117 +106,6 @@ class UserController extends AppController
     }
 
     /**
-     * Signup user
-     *
-     * @auth none
-     * @post string first_name
-     * @post string email
-     * @post string|int postcode
-     * @post string username
-     * @post string password
-     * @post string language abbreviation like de en fr it
-     * @post string|null last_name
-     * @post string|null cevi_name
-     *
-     * @param Request $request
-     * @param Response $response
-     * @return Response
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
-     */
-    public function signupAction(Request $request, Response $response): Response
-    {
-        $json = (string)$request->getBody();
-        $data = json_decode($json, true);
-
-        $email = array_value('email', $data);
-        $firstName = array_value('first_name', $data);
-        $lastName = array_value('last_name', $data);
-        $ceviName = array_value('cevi_name', $data);
-        $postcode = array_value('postcode', $data);
-        $username = array_value('username', $data);
-        $password = array_value('password', $data);
-        $lang = array_value('language', $data);
-        $departmentHash = array_value('department_hash', $data);
-
-        $languageHash = $this->languageRepository->getLanguageByAbbreviation((string)$lang);
-
-        $validationContext = $this->userValidation->validateSignup(
-            (string)$email,
-            (string)$firstName,
-            (string)$lastName,
-            (string)$postcode,
-            (string)$username,
-            (string)$password,
-            (string)$ceviName,
-            (string)$languageHash,
-            (string)$departmentHash
-        );
-        if ($validationContext->fails()) {
-            return $this->error($response, $validationContext->getMessage(), 422, $validationContext->toArray());
-        }
-
-        $signupData = $this->userRepository->signupUser(
-            (string)$email,
-            (string)$firstName,
-            (string)$lastName,
-            (string)$postcode,
-            (string)$username,
-            (string)$password,
-            (string)$ceviName,
-            (string)$languageHash,
-            (string)$departmentHash
-        );
-
-        $url = 'https://cevi-web.com/registration/verify/' . $signupData['token'];
-        if (!$this->isProduction) {
-            $url = 'http://localhost:4200/registration/verify/' . $signupData['token'];
-        }
-
-        $templateData = [
-            'url' => $url,
-            'firstName' => $firstName,
-            'email' => $email,
-            'username' => $username,
-        ];
-        $template = $this->twig->render('signup.twig', $templateData);
-        // Todo replace email after setting up mailgun account
-        $this->mailer->sendHtml('bjoern.pfoster@gmail.com', __('CEVI Web sign up'), $template);
-
-        $responseData = [
-            'code' => 200,
-            'message' => __('Signed up user successfully'),
-            'user_hash' => $signupData['hash'],
-        ];
-
-        return $this->json($response, $responseData);
-    }
-
-    /**
-     * Verify email action
-     *
-     * @auth none
-     * @post string email_token The token received in the email
-     *
-     * @param Request $request
-     * @param Response $response
-     * @return Response
-     */
-    public function verifyEmailAction(Request $request, Response $response): Response
-    {
-        $json = (string)$request->getBody();
-        $data = json_decode($json, true);
-        $token = (string)array_value('token', $data);
-        $userHash = $this->userRepository->getUserIdByEmailToken($token);
-        if (!$this->userRepository->existsUser($userHash)) {
-            return $this->error($response, __('Please check your data'), 422, ['message' => __('User does not exist'), 'verified' => false]);
-        }
-        $this->userRepository->confirmEmail($userHash);
-        return $this->json($response, ['verified' => true]);
-    }
-
-    /**
      * Update user action.
      *
      * @put null|string|int postcode
@@ -246,28 +133,21 @@ class UserController extends AppController
      */
     public function updateUserAction(Request $request, Response $response, array $args): Response
     {
-        $json = (string)$request->getBody();
-        $data = json_decode($json, true);
-
-        if (array_key_exists('language', $data)) {
-            $data['language_hash'] = $this->languageRepository->getLanguageByAbbreviation($data['language']);
-        }
-
-        $validationContext = $this->userValidation->validateUpdate($data, $this->jwt['user_id']);
-        if ($validationContext->fails()) {
-            return $this->error($response, $validationContext->getMessage(), 422, $validationContext->toArray());
-        }
-
-        $singupCompleted = $this->userRepository->updateUser($data, $args['user_hash'], $this->jwt['user_id']);
-
-        $responseData = [
-            'info' => [
-                'message' => __('Updated user successfully'),
-                'signup_completed' => (bool)$singupCompleted,
-            ],
-        ];
-
-        return $this->json($response, $responseData);
+//        $json = (string)$request->getBody();
+//        $data = json_decode($json, true);
+//
+//        return $this->error($response, $validationContext->getMessage(), 422, $validationContext->toArray());
+//
+//        $singupCompleted = $this->userRepository->updateUser($data, $args['user_hash'], $this->jwt['user_id']);
+//
+//        $responseData = [
+//            'info' => [
+//                'message' => __('Updated user successfully'),
+//                'signup_completed' => (bool)$singupCompleted,
+//            ],
+//        ];
+//
+//        return $this->json($response, $responseData);
     }
 
     /**

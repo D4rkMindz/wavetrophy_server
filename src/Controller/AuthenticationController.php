@@ -66,7 +66,7 @@ class AuthenticationController extends AppController
         $password = (string)$data['password'];
         $lang = (string)$request->getParam('lang');
         if ($this->loginValidation->canLogin($username, $password)) {
-            $userHash = $this->userRepository->getHashByusername($username);
+            $userHash = $this->userRepository->getHashByUsername($username);
             $expireOffset = 60 * 15; // 15 Minutes
             $token = JWTFactory::generate($username, $userHash, $lang, $this->secret, $expireOffset);
             $expiresAt = (time() + $expireOffset) * 1000;

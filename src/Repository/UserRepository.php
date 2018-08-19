@@ -2,17 +2,18 @@
 
 namespace App\Repository;
 
-use App\Util\Formatter;
 use App\Service\Mail\MailToken;
-use App\Util\PhonenumberConverter;
-use App\Util\Role;
 use App\Table\CityTable;
 use App\Table\EmailTokenTable;
 use App\Table\LanguageTable;
 use App\Table\PermissionTable;
 use App\Table\UserTable;
+use App\Util\Formatter;
+use App\Util\Role;
 use Cake\Database\Query;
 use Exception;
+use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberUtil;
 use Slim\Container;
 
 /**
@@ -29,26 +30,6 @@ class UserRepository extends AppRepository
      * @var LanguageTable
      */
     private $languageTable;
-
-    /**
-     * @var PositionTable
-     */
-    private $positionTable;
-
-    /**
-     * @var GenderTable
-     */
-    private $genderTable;
-
-    /**
-     * @var DepartmentTable
-     */
-    private $departmentTable;
-
-    /**
-     * @var CityTable
-     */
-    private $cityTable;
 
     /**
      * @var PermissionTable
@@ -75,10 +56,6 @@ class UserRepository extends AppRepository
     {
         $this->userTable = $container->get(UserTable::class);
         $this->languageTable = $container->get(LanguageTable::class);
-        $this->positionTable = $container->get(PositionTable::class);
-        $this->genderTable = $container->get(GenderTable::class);
-        $this->departmentTable = $container->get(DepartmentTable::class);
-        $this->cityTable = $container->get(CityTable::class);
         $this->permissionTable = $container->get(PermissionTable::class);
         $this->emailTokenTable = $container->get(EmailTokenTable::class);
 
@@ -91,7 +68,7 @@ class UserRepository extends AppRepository
      * @param string $username
      * @return string
      */
-    public function getHashByusername(string $username): string
+    public function getHashByUsername(string $username): string
     {
         $where = ['username' => $username];
         if (is_email($username)) {
@@ -239,48 +216,7 @@ class UserRepository extends AppRepository
         string $departmentHash
     ): array
     {
-        $query = $this->cityTable->newSelect();
-        $query->select('id')->where(['number' => $postcode]);
-        $row = $query->execute()->fetch('assoc');
-        $cityId = !empty($row) ? (string)$row['id'] : '';
 
-        $query = $this->permissionTable->newSelect();
-        $query->select('hash')->where(['level' => Role::ANONYMOUS]);
-        $row = $query->execute()->fetch('assoc');
-        $permissionHash = !empty($row) ? $row['hash'] : '';
-
-        $row = [
-            'hash' => uniqid(),
-            'city_id' => (int)$cityId,
-            'language_hash' => (string)$languageHash,
-            'department_hash' => (string)$departmentHash,
-            'email' => $email,
-            'first_name' => $firstName,
-            'username' => $username,
-            'password' => password_hash($password, PASSWORD_BCRYPT),
-            'permission_hash' => $permissionHash,
-            'created_at' => date('Y-m-d H:i:s'),
-            'created_by' => 0,
-        ];
-
-        if (!empty($lastName)) {
-            $row['last_name'] = $lastName;
-        }
-
-        if (!empty($ceviName)) {
-            $row['cevi_name'] = $ceviName;
-        }
-
-        $userHash = $this->userTable->insert($row, 'NOT REQUIRED');
-        $emailToken = MailToken::generate();
-        $emailTokenRow = [
-            'user_hash' => $userHash,
-            'token' => $emailToken,
-        ];
-        $this->emailTokenTable->insert($emailTokenRow, 0);
-
-        $data = ['hash' => $row['hash'], 'token' => $emailTokenRow['token']];
-        return $data;
     }
 
     /**
@@ -357,38 +293,9 @@ class UserRepository extends AppRepository
     public function updateUser(array $data, string $whereHash, string $userId): bool
     {
         $update = [];
-        if (array_key_exists('postcode', $data)) {
-            $query = $this->cityTable->newSelect();
-            $query->select('id')->where(['number' => $data['postcode']]);
-            $row = $query->execute()->fetch('assoc');
-            $cityId = !empty($row) ? $row['id'] : null;
-            if (!empty($cityId)) {
-                $update['city_id'] = $cityId;
-            }
-        }
-
-        if (array_key_exists('language_hash', $data)) {
-            $update['language_hash'] = $data['language_hash'];
-        }
-
-        if (array_key_exists('department_hash', $data)) {
-            $update['department_hash'] = $data['department_hash'];
-        }
 
         if (array_key_exists('position_hash', $data)) {
             $update['position_hash'] = $data['position_hash'];
-        }
-
-        if (array_key_exists('gender_hash', $data)) {
-            $update['gender_hash'] = $data['gender_hash'];
-        }
-
-        if (array_key_exists('first_name', $data)) {
-            $update['first_name'] = $data['first_name'];
-        }
-
-        if (array_key_exists('email', $data)) {
-            $update['email'] = $data['email'];
         }
 
         if (array_key_exists('username', $data)) {
@@ -399,72 +306,41 @@ class UserRepository extends AppRepository
             $update['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
         }
 
-        if (array_key_exists('js_certificate', $data)) {
-            $update['js_certificate'] = (bool)$data['js_certificate'];
+        if (array_key_exists('language', $data)) {
+            $update['language'] = $data['language'];
         }
 
-        if (array_key_exists('js_certificate_until', $data)) {
-            $update['js_certificate_until'] = date('Y-m-d H:i:s', $data['js_certificate_until']);
+        if (array_key_exists('first_name', $data)) {
+            $update['first_name'] = $data['first_name'];
+        }
+
+        if (array_key_exists('email', $data)) {
+            $update['email'] = $data['email'];
         }
 
         if (array_key_exists('last_name', $data)) {
             $update['last_name'] = $data['last_name'];
         }
 
-        if (array_key_exists('address', $data)) {
-            $update['address'] = $data['address'];
+        if (array_key_exists('is_public', $data)) {
+            $update['is_public'] = (bool)$data['is_public'];
         }
 
-        if (array_key_exists('cevi_name', $data)) {
-            $update['cevi_name'] = $data['cevi_name'];
-        }
-
-        if (array_key_exists('birthdate', $data)) {
-            $update['birthdate'] = date('Y-m-d', $data['birthdate']);
-        }
-
-        $phonenumberConverter = new PhonenumberConverter();
-
-        if (array_key_exists('phone', $data)) {
-            $update['phone'] = $phonenumberConverter->convert($data['phone']);
-        }
-
-        if (array_key_exists('mobile', $data)) {
-            $update['mobile'] = $phonenumberConverter->convert($data['mobile']);
+        if (array_key_exists('mobile_number', $data)) {
+            try {
+                $update['mobile_number'] = PhoneNumberUtil::getInstance()->parse($data['mobile_number']);
+            } catch (NumberParseException $e) {
+                $data['mobile_number'] = null;
+                // TODO maybe fail with false?
+            }
         }
 
         $update['modified_at'] = date('Y-m-d H:i:s');
         $update['modified_by'] = $userId;
 
-        $this->userTable->modify($update, ['hash' => $whereHash], $userId);
-        $query = $this->userTable->newSelect();
-        $query->select(['signup_completed'])->where(['hash' => $whereHash]);
-        $row1 = $query->execute()->fetch('assoc');
-        if (!(bool)$row1['signup_completed']) {
-            $fields = [
-                'city_id',
-                'language_hash',
-                'department_hash',
-                'position_hash',
-                'gender_hash',
-                'first_name',
-                'email',
-                'username',
-                'js_certificate',
-                'last_name',
-                'address',
-                'cevi_name',
-                'birthdate',
-                'phone',
-                'mobile',
-            ];
-            $query->select($fields)->where(['hash' => $whereHash]);
-            $row2 = $query->execute()->fetch('assoc');
-            if (!array_search(null, $row2) && !array_search('', $row2)) {
-                $this->userTable->modify(['signup_completed' => true], ['hash' => $whereHash], $userId);
-                return true;
-            }
-
+        try {
+            $this->userTable->modify($update, ['hash' => $whereHash], $userId);
+        } catch (Exception $e) {
             return false;
         }
 
@@ -499,40 +375,19 @@ class UserRepository extends AppRepository
         $query = $this->userTable->newSelect();
 
         $userTableName = $this->userTable->getTablename();
-        $positionTableName = $this->positionTable->getTablename();
-        $cityTableName = $this->cityTable->getTablename();
-        $genderTableName = $this->genderTable->getTablename();
-        $departmentTableName = $this->departmentTable->getTablename();
-        $languageTableName = $this->languageTable->getTablename();
+        $permissionTablename = $this->permissionTable->getTablename();
 
         $fields = [
             'hash' => $userTableName . '.hash',
-            'position_hash' => $userTableName . '.position_hash',
-            'position_name_de' => $positionTableName . '.name_de',
-            'position_name_en' => $positionTableName . '.name_en',
-            'position_name_fr' => $positionTableName . '.name_fr',
-            'position_name_it' => $positionTableName . '.name_it',
-            'language_full' => $languageTableName . '.name',
-            'language_abbr' => $languageTableName . '.abbreviation',
-            'last_name' => $userTableName . '.last_name',
-            'first_name' => $userTableName . '.first_name',
-            'cevi_name' => $userTableName . '.cevi_name',
-            'email' => $userTableName . '.email',
+            'permission_hash' => $userTableName . '.permission_hash',
+            'permission_name' => $permissionTablename . '.name',
             'username' => $userTableName . '.username',
-            'phone' => $userTableName . '.phone',
-            'mobile' => $userTableName . '.mobile',
-            'city_id' => $cityTableName . '.id',
-            'city_name_de' => $cityTableName . '.title_de',
-            'city_name_en' => $cityTableName . '.title_en',
-            'city_name_fr' => $cityTableName . '.title_fr',
-            'city_name_it' => $cityTableName . '.title_it',
-            'city_code' => $cityTableName . '.number',
-            'street' => $userTableName . '.address',
-            'birthdate' => $userTableName . '.birthdate',
-            'js_certificate' => $userTableName . '.js_certificate',
-            'js_certificate_until' => $userTableName . '.js_certificate_until',
-            'signup_completed' => $userTableName . '.signup_completed',
-            'email_verified' => $userTableName . '.email_verified',
+            'language' => $userTableName . '.language',
+            'first_name' => $userTableName . '.first_name',
+            'last_name' => $userTableName . '.last_name',
+            'email' => $userTableName . '.email',
+            'is_public' => $userTableName . '.is_public',
+            'mobile_number' => $userTableName . '.mobile_number',
             'created_at' => $userTableName . '.created_at',
             'created_by' => $userTableName . '.created_by',
             'modified_at' => $userTableName . '.modified_at',
@@ -544,29 +399,9 @@ class UserRepository extends AppRepository
         $query->select($fields)
             ->join([
                 [
-                    'table' => $cityTableName,
+                    'table' => $permissionTablename,
                     'type' => 'LEFT',
-                    'conditions' => $userTableName . '.city_id=' . $cityTableName . '.id',
-                ],
-                [
-                    'table' => $departmentTableName,
-                    'type' => 'LEFT',
-                    'conditions' => $userTableName . '.department_hash=' . $departmentTableName . '.hash',
-                ],
-                [
-                    'table' => $genderTableName,
-                    'type' => 'LEFT',
-                    'conditions' => $userTableName . '.gender_hash=' . $genderTableName . '.hash',
-                ],
-                [
-                    'table' => $positionTableName,
-                    'type' => 'LEFT',
-                    'conditions' => $userTableName . '.position_hash=' . $positionTableName . '.hash',
-                ],
-                [
-                    'table' => $languageTableName,
-                    'type' => 'LEFT',
-                    'conditions' => $userTableName . '.language_hash=' . $languageTableName . '.hash',
+                    'conditions' => $userTableName . '.permission_hash=' . $permissionTablename . '.hash',
                 ],
             ]);
 

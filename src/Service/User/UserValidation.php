@@ -49,7 +49,6 @@ class UserValidation extends AppValidation
     {
         parent::__construct($container);
         $this->userRepository = $container->get(UserRepository::class);
-        $this->languageRepository = $container->get(LanguageRepository::class);
         $this->positionRepository = $container->get(PositionRepository::class);
         $this->genderRepository = $container->get(GenderRepository::class);
     }
@@ -67,25 +66,10 @@ class UserValidation extends AppValidation
 
         $this->validateModifier($modifier, $validationContext);
 
-        if (array_key_exists('postcode', $data)) {
-            $this->validatePostcode((string)$data['postcode'], $validationContext);
-        }
-
-        if (array_key_exists('language_hash', $data)) {
-            $this-> validateLanguage((string)$data['language_hash'], $validationContext);
-        }
-
-        if (array_key_exists('department_hash', $data)) {
-            $this->validateDepartment($data['department_hash'], $validationContext);
-        }
-
         if (array_key_exists('posititon_hash', $data)) {
             $this->validatePosition($data['posititon_hash'], $validationContext);
         }
 
-        if (array_key_exists('gender_hash', $data)) {
-            $this->validateGender($data['gender_hash'], $validationContext);
-        }
 
         if (array_key_exists('first_name', $data)) {
             $this->validateName($data['first_name'], $validationContext, 'first_name');
