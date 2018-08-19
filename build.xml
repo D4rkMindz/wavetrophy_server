@@ -16,7 +16,7 @@
     </tstamp>
 
     <!-- File variables-->
-    <property name="filename" value="contact_form_${timestamp}.zip"/>
+    <property name="filename" value="cevi-web_api_${timestamp}.zip"/>
     <property name="build_dir" value="${basedir}/build"/>
 
     <!-- By default, we assume all tools to be on the $PATH -->
@@ -43,15 +43,6 @@
         </exec>
     </target>
 
-    <target name="fix-style" description="Code style fixer">
-        <mkdir dir="${basedir}/build"/>
-        <get src="http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar" dest="${basedir}/build/php-cs-fixer.phar" skipexisting="true"/>
-        <exec executable="php" searchpath="true" resolveexecutable="true" failonerror="true">
-            <arg value="${basedir}/build/php-cs-fixer.phar"/>
-            <arg line="fix --config=.cs.php"/>
-        </exec>
-    </target>
-
     <target name="deploy" description="get your Repository from GitHub to your build folder">
         <!-- Choose, which environment you want to deploy -->
         <input message="Which config should be used?"
@@ -66,13 +57,13 @@
         <!-- Upload deploy.php -->
         <echo message="Uploading deploy.php ..."/>
         <scp file="${build_dir}/deploy.php"
-             todir="${build.ftp.user}:${build.ftp.password}@${build.ftp.host}:${build.ftp.dir}"
+             todir="${build.ftp.username}:${build.ftp.password}@${build.ftp.host}:${build.ftp.dir}"
              trust="true"/>
 
         <!-- Upload clean-up.php -->
         <echo message="uploading clean-up.php ..."/>
         <scp file="${build_dir}/clean-up.php"
-             todir="${build.ftp.user}:${build.ftp.password}@${build.ftp.host}:${build.ftp.dir}"
+             todir="${build.ftp.username}:${build.ftp.password}@${build.ftp.host}:${build.ftp.dir}"
              trust="true"/>
 
         <!-- Deleting clean-up.php and deploy.php -->
@@ -83,7 +74,7 @@
         <!-- Upload zip-file -->
         <echo message="Uploading ${filename} ..."/>
         <scp file="${build_dir}/${filename}"
-             todir="${build.ftp.user}:${build.ftp.password}@${build.ftp.host}:${build.ftp.dir}"
+             todir="${build.ftp.username}:${build.ftp.password}@${build.ftp.host}:${build.ftp.dir}"
              trust="true"/>
 
         <!-- Delete old directories -->
@@ -94,7 +85,7 @@
 
         <!-- Call deploy.php for zip-file -->
         <sshexec host="${build.ftp.host}"
-                 username="${build.ftp.user}"
+                 username="${build.ftp.username}"
                  password="${build.ftp.password}"
                  command="cd ${build.ftp.dir};php deploy.php ${filename}"
                  usepty="true"
@@ -111,7 +102,7 @@
 
         <!-- Install project dependencies -->
         <exec executable="php" failonerror="true">
-            <arg line="${build_dir}/composer.phar install --no-dev --optimize-autoloader -d ${build_dir}/master"/>
+            <arg line="${build_dir}/composer.phar install --ignore-platform-reqs --no-dev --optimize-autoloader -d ${build_dir}/master"/>
         </exec>
         <move file="${build_dir}/master/bin/deploy.php" todir="${build_dir}"/>
         <move file="${build_dir}/master/bin/clean-up.php" todir="${build_dir}"/>
@@ -126,16 +117,17 @@
         <delete dir="${build_dir}/master"/>
         <mkdir dir="${build_dir}/master"/>
         <exec executable="git" failonerror="true">
-            <arg line="archive  --format zip --output ${build_dir}/master.zip master"/>
+            <arg line="archive --format zip --output ${build_dir}/master.zip master"/>
         </exec>
         <unzip src="${build_dir}/master.zip" dest="${build_dir}/master"/>
     </target>
 
     <target name="clean-build">
-        <delete dir="${build_dir}/master/tests"/>
+        <delete file="${build_dir}/master/.apidesign.md"/>
         <delete file="${build_dir}/master/.gitignore"/>
         <delete file="${build_dir}/master/.styleci.yml"/>
-        <delete file="${build_dir}/master/.scrudinizer.yml"/>
+        <delete file="${build_dir}/master/.scrutinizer.yml"/>
+        <delete file="${build_dir}/master/phpunit.xml"/>
         <delete file="${build_dir}/master/build.xml"/>
         <delete file="${build_dir}/master/phpstan.neon"/>
         <delete file="${build_dir}/master/README.md"/>
@@ -143,9 +135,12 @@
         <delete file="${build_dir}/master/composer.lock"/>
         <delete file="${build_dir}/master/config/ant.example.properties"/>
         <delete file="${build_dir}/master/config/env.example.php"/>
-        <delete file="${build_dir}/master/config/clean-up.php"/>
-        <delete file="${build_dir}/master/config/deploy.php"/>
+        <delete file="${build_dir}/master/bin/clean-up.php"/>
+        <delete file="${build_dir}/master/bin/deploy.php"/>
+        <delete file="${build_dir}/master/bin/setup.php"/>
+        <delete dir="${build_dir}/master/tests"/>
         <delete dir="${build_dir}/master/docs"/>
+        <delete dir="${build_dir}/master/resources/dumps"/>
         <delete dir="${build_dir}/master/vendor/phpstan"/>
         <delete dir="${build_dir}/master/vendor/monolog/monolog/doc"/>
         <delete dir="${build_dir}/master/vendor/monolog/monolog/tests"/>
@@ -159,14 +154,7 @@
         <delete dir="${build_dir}/master/vendor/symfony/translation/Tests"/>
     </target>
 
-    <target name="check-docblocks">
-        <exec executable="php" failonerror="true">
-            <arg value="${basedir}/vendor/odan/docblock-checker/bin/docblock-checker"/>
-            <arg value="--exclude=build/*,public/*,.idea/*,.svn/*,.git/*,resources/*,tmp/*,vendor/*"/>
-        </exec>
-    </target>
-
-    <target name="phpstan" description="DbBlockedUsersTest code for errors">
+    <target name="phpstan" description="Test code for errors">
         <mkdir dir="${basedir}/build"/>
         <get src="https://github.com/phpstan/phpstan/releases/download/0.9/phpstan.phar"
              dest="${basedir}/build/phpstan.phar"
@@ -219,6 +207,19 @@
         <exec executable="${basedir}/vendor/bin/phpunit${ext}" searchpath="true" resolveexecutable="true" failonerror="true" taskname="phpunit-coverage">
             <arg value="--configuration" />
             <arg path="${basedir}/phpunit.xml" />
+            <arg value="--coverage-clover" />
+            <arg path="${basedir}/build/logs/clover.xml" />
+            <arg value="--coverage-html" />
+            <arg path="${basedir}/build/coverage" />
+        </exec>
+    </target>
+
+    <target name="phpunit-coverage-travis" description="Run unit tests with PHPUnit with coverage in TravisCI">
+        <delete dir="${basedir}/build/coverage" />
+        <mkdir dir="${basedir}/build/coverage" />
+        <exec executable="${basedir}/vendor/bin/phpunit${ext}" searchpath="true" resolveexecutable="true" failonerror="true" taskname="phpunit-coverage">
+            <arg value="--configuration" />
+            <arg path="${basedir}/phpunit-travis.xml" />
             <arg value="--coverage-clover" />
             <arg path="${basedir}/build/logs/clover.xml" />
             <arg value="--coverage-html" />

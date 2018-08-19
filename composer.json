@@ -12,11 +12,11 @@
     "php-http/curl-client": "^1.7",
     "zendframework/zend-hydrator": "^2.3",
     "zendframework/zend-filter": "^2.7",
+    "robmorgan/phinx": "^0.9.1",
     "zendframework/zend-servicemanager": "^3.3",
     "d4rkmindz/slim-jwt-auth": "^2.3",
     "ramsey/uuid": "^3.8",
-    "giggsey/libphonenumber-for-php": "^8.9",
-    "robmorgan/phinx": "^0.9.1"
+    "giggsey/libphonenumber-for-php": "^8.9"
   },
   "require-dev": {
     "odan/phinx-migrations-generator": "^2.3",
