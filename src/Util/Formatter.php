@@ -40,7 +40,10 @@ class Formatter
         $tmp['address'] = [
             'lat' => $location['address_lat'],
             'lon' => $location['address_lon'],
-            'url' => $location['address_url'],
+            'url' => [
+                'android' => $location['address_url_android'],
+                'ios' => $location['address_url_ios'],
+            ],
             'text' => [
                 'zip' => $location['address_zip'],
                 'city' => $location['address_city'],

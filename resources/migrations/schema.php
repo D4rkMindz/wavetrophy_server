@@ -17,6 +17,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_general_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -168,6 +169,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -401,15 +403,38 @@ return array (
           'PRIVILEGES' => 'select,insert,update,references',
           'COLUMN_COMMENT' => '',
         ),
-        'map_url' => 
+        'map_url_android' => 
         array (
           'TABLE_CATALOG' => 'def',
           'TABLE_SCHEMA' => 'wavetrophy',
           'TABLE_NAME' => 'address',
-          'COLUMN_NAME' => 'map_url',
+          'COLUMN_NAME' => 'map_url_android',
           'ORDINAL_POSITION' => '11',
           'COLUMN_DEFAULT' => NULL,
-          'IS_NULLABLE' => 'YES',
+          'IS_NULLABLE' => 'NO',
+          'DATA_TYPE' => 'varchar',
+          'CHARACTER_MAXIMUM_LENGTH' => '1000',
+          'CHARACTER_OCTET_LENGTH' => '3000',
+          'NUMERIC_PRECISION' => NULL,
+          'NUMERIC_SCALE' => NULL,
+          'DATETIME_PRECISION' => NULL,
+          'CHARACTER_SET_NAME' => 'utf8',
+          'COLLATION_NAME' => 'utf8_unicode_ci',
+          'COLUMN_TYPE' => 'varchar(1000)',
+          'COLUMN_KEY' => '',
+          'EXTRA' => '',
+          'PRIVILEGES' => 'select,insert,update,references',
+          'COLUMN_COMMENT' => '',
+        ),
+        'map_url_ios' => 
+        array (
+          'TABLE_CATALOG' => 'def',
+          'TABLE_SCHEMA' => 'wavetrophy',
+          'TABLE_NAME' => 'address',
+          'COLUMN_NAME' => 'map_url_ios',
+          'ORDINAL_POSITION' => '12',
+          'COLUMN_DEFAULT' => NULL,
+          'IS_NULLABLE' => 'NO',
           'DATA_TYPE' => 'varchar',
           'CHARACTER_MAXIMUM_LENGTH' => '1000',
           'CHARACTER_OCTET_LENGTH' => '3000',
@@ -430,7 +455,7 @@ return array (
           'TABLE_SCHEMA' => 'wavetrophy',
           'TABLE_NAME' => 'address',
           'COLUMN_NAME' => 'description',
-          'ORDINAL_POSITION' => '12',
+          'ORDINAL_POSITION' => '13',
           'COLUMN_DEFAULT' => NULL,
           'IS_NULLABLE' => 'YES',
           'DATA_TYPE' => 'longtext',
@@ -453,7 +478,7 @@ return array (
           'TABLE_SCHEMA' => 'wavetrophy',
           'TABLE_NAME' => 'address',
           'COLUMN_NAME' => 'created_at',
-          'ORDINAL_POSITION' => '13',
+          'ORDINAL_POSITION' => '14',
           'COLUMN_DEFAULT' => 'CURRENT_TIMESTAMP',
           'IS_NULLABLE' => 'NO',
           'DATA_TYPE' => 'datetime',
@@ -476,7 +501,7 @@ return array (
           'TABLE_SCHEMA' => 'wavetrophy',
           'TABLE_NAME' => 'address',
           'COLUMN_NAME' => 'created_by',
-          'ORDINAL_POSITION' => '14',
+          'ORDINAL_POSITION' => '15',
           'COLUMN_DEFAULT' => NULL,
           'IS_NULLABLE' => 'YES',
           'DATA_TYPE' => 'varchar',
@@ -499,7 +524,7 @@ return array (
           'TABLE_SCHEMA' => 'wavetrophy',
           'TABLE_NAME' => 'address',
           'COLUMN_NAME' => 'modified_at',
-          'ORDINAL_POSITION' => '15',
+          'ORDINAL_POSITION' => '16',
           'COLUMN_DEFAULT' => NULL,
           'IS_NULLABLE' => 'YES',
           'DATA_TYPE' => 'datetime',
@@ -522,7 +547,7 @@ return array (
           'TABLE_SCHEMA' => 'wavetrophy',
           'TABLE_NAME' => 'address',
           'COLUMN_NAME' => 'modified_by',
-          'ORDINAL_POSITION' => '16',
+          'ORDINAL_POSITION' => '17',
           'COLUMN_DEFAULT' => NULL,
           'IS_NULLABLE' => 'YES',
           'DATA_TYPE' => 'varchar',
@@ -545,7 +570,7 @@ return array (
           'TABLE_SCHEMA' => 'wavetrophy',
           'TABLE_NAME' => 'address',
           'COLUMN_NAME' => 'archived_at',
-          'ORDINAL_POSITION' => '17',
+          'ORDINAL_POSITION' => '18',
           'COLUMN_DEFAULT' => NULL,
           'IS_NULLABLE' => 'YES',
           'DATA_TYPE' => 'datetime',
@@ -568,7 +593,7 @@ return array (
           'TABLE_SCHEMA' => 'wavetrophy',
           'TABLE_NAME' => 'address',
           'COLUMN_NAME' => 'archived_by',
-          'ORDINAL_POSITION' => '18',
+          'ORDINAL_POSITION' => '19',
           'COLUMN_DEFAULT' => NULL,
           'IS_NULLABLE' => 'YES',
           'DATA_TYPE' => 'varchar',
@@ -591,7 +616,7 @@ return array (
           'TABLE_SCHEMA' => 'wavetrophy',
           'TABLE_NAME' => 'address',
           'COLUMN_NAME' => 'comment',
-          'ORDINAL_POSITION' => '19',
+          'ORDINAL_POSITION' => '20',
           'COLUMN_DEFAULT' => NULL,
           'IS_NULLABLE' => 'YES',
           'DATA_TYPE' => 'varchar',
@@ -641,6 +666,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -884,6 +910,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -1242,6 +1269,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -1600,6 +1628,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -1981,6 +2010,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -2224,6 +2254,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -2490,6 +2521,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -2756,6 +2788,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -3022,6 +3055,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -3311,6 +3345,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
@@ -3738,6 +3773,7 @@ return array (
         'table_comment' => '',
         'table_collation' => 'utf8_unicode_ci',
         'character_set_name' => 'utf8',
+        'row_format' => 'Compact',
       ),
       'columns' => 
       array (
