@@ -37,7 +37,7 @@ class ContactController extends AppController
     {
         parent::__construct($container);
         $this->contactRepository = $container->get(ContactRepository::class);
-        $this->contactValidation = new ContactValidation();
+        $this->contactValidation = $container->get(ContactValidation::class);
     }
 
     /**

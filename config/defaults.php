@@ -5,7 +5,7 @@ $config = [];
 $applicationName = 'app_template';
 
 $config = [
-    'displayErrorDetails' => true,
+    'displayErrorDetails' => false,
     'determineRouteBeforeAppMiddleware' => true,
     'addContentLengthHeader' => false,
     'enableCORS' => false,

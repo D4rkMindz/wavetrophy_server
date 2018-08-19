@@ -1,6 +1,7 @@
 <?php
 
 use App\Service\Authentication\AuthenticationValidation;
+use App\Service\Validation\ContactValidation;
 use Aura\Session\Session;
 use Aura\Session\SessionFactory;
 use Cake\Database\Connection;
@@ -102,6 +103,10 @@ $container[Connection::class] = function (Container $container): Connection {
     $db->connect();
 
     return $db;
+};
+
+$container[ContactValidation::class] = function (Container $container): ContactValidation {
+    return new ContactValidation($container);
 };
 
 /**
