@@ -163,7 +163,7 @@ $app->add(function (Request $request, Response $response, $next) use ($container
     $response = $next($request, $response);
     $corsEnabled = $container->get('settings')->get('enableCORS');
     if ($corsEnabled) {
-        $response = $response->withHeader('Access-Control-Allow-Origin', 'http://localhost:8100')
+        $response = $response->withHeader('Access-Control-Allow-Origin', '*')
             ->withHeader('Access-Control-Allow-Headers', 'X-App-Language, X-Token, Content-Type')
             ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
     }
