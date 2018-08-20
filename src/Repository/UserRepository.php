@@ -357,7 +357,7 @@ class UserRepository extends AppRepository
     public function deleteUser(string $userHash, string $executorId): bool
     {
         try {
-            $this->userTable->archive($executorId, ['hash' => $userHash]);
+//            $this->userTable->archive($executorId, ['hash' => $userHash]);
         } catch (Exception $exception) {
             return false;
         }

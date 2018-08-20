@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Factory\MapURLFactory;
 use App\Repository\LocationRepository;
+use App\Service\Response\InternalErrorCode;
 use App\Service\Response\JSONResponse;
 use App\Service\Validation\LocationValidation;
 use Interop\Container\Exception\ContainerException;
@@ -84,6 +85,8 @@ class LocationController extends AppController
         $androidURL = MapURLFactory::createForAndroid($lat, $lon, $additionalStops);
         $iosURL = MapURLFactory::createForiOS($lat, $lon, $additionalStops);
 
+        $images = array_value('images', $data);
+
         $hash = $this->locationRepository->createLocation(
             $this->jwt['user_hash'],
             $wavetrophyHash,
@@ -96,10 +99,39 @@ class LocationController extends AppController
             $lon,
             $androidURL,
             $iosURL,
+            $images,
             $description
         );
 
         $responseData = JSONResponse::success(['location_hash' => $hash]);
+
+        return $this->json($response, $responseData);
+    }
+
+    /**
+     * @param $request Request
+     * @param $response Response
+     * @param array $args
+     * @return ResponseInterface
+     */
+    public function deleteLocationAction(Request $request, Response $response, array $args): ResponseInterface
+    {
+        $wavetrophyHash = $args['wavetrophy_hash'];
+        $roadGroupHash = $args['road_group_hash'];
+        $locationHash = $args['location_hash'];
+
+        $validationContext = $this->locationValidation->validateDeletion($wavetrophyHash, $roadGroupHash, $locationHash);
+        if ($validationContext->fails()) {
+            return $this->errorFromValidationContext($response, $validationContext);
+        }
+
+        $locationArchived = $this->locationRepository->archiveLocation($locationHash, $this->jwt['user_hash']);
+        if (!$locationArchived) {
+            $responseData = JSONResponse::error(InternalErrorCode::ACTION_FAILED, ['error' => __('Location not deleted')], __('Location not deleted'));
+            return $this->error($response, __('Location not deleted'), 422, $responseData);
+        }
+
+        $responseData = JSONResponse::success(['info' => __('Location deleted')]);
 
         return $this->json($response, $responseData);
     }

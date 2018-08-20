@@ -5,7 +5,9 @@ namespace App\Repository;
 
 
 use App\Service\UUID\UUID;
+use App\Table\AddressImageTable;
 use App\Table\AddressTable;
+use App\Table\ImageTable;
 use Interop\Container\Exception\ContainerException;
 use Slim\Container;
 
@@ -17,6 +19,16 @@ class LocationRepository extends AppRepository
     private $addressTable;
 
     /**
+     * @var AddressImageTable
+     */
+    private $addressImageTable;
+
+    /**
+     * @var ImageTable
+     */
+    private $imageTable;
+
+    /**
      * LocationRepository constructor.
      * @param Container $container
      * @throws ContainerException
@@ -24,6 +36,8 @@ class LocationRepository extends AppRepository
     public function __construct(Container $container)
     {
         $this->addressTable = $container->get(AddressTable::class);
+        $this->imageTable = $container->get(ImageTable::class);
+        $this->addressImageTable = $container->get(AddressImageTable::class);
     }
 
     /**
@@ -40,6 +54,7 @@ class LocationRepository extends AppRepository
      * @param string $lon
      * @param string $mapUrlAndroid
      * @param string $mapUrlIos
+     * @param array $images
      * @param null|string $description
      * @return string
      */
@@ -55,6 +70,7 @@ class LocationRepository extends AppRepository
         string $lon,
         string $mapUrlAndroid,
         string $mapUrlIos,
+        array $images,
         ?string $description
     )
     {
@@ -75,6 +91,44 @@ class LocationRepository extends AppRepository
             $row['description'] = $description;
         }
 
-        return $this->addressTable->insert($row, $userHash);
+        $locationHash = $this->addressTable->insert($row, $userHash);
+        if (!empty($images)) {
+            foreach ($images as $image) {
+                $imageRow = [
+                    'hash' => UUID::generate(),
+                    'url' => $image,
+                ];
+                $imageHash = $this->imageTable->insert($imageRow, $userHash);
+                $addressImageRow = [
+                    'image_hash' => $imageHash,
+                    'address_hash' => $locationHash,
+                ];
+                $this->addressImageTable->insert($addressImageRow, $userHash);
+            }
+        }
+        return $locationHash;
+    }
+
+    /**
+     * Check if location (address) exists.
+     *
+     * @param string $locationHash
+     * @return bool
+     */
+    public function existsLocation(string $locationHash)
+    {
+        return $this->exists($this->imageTable, ['hash' => $locationHash]);
+    }
+
+    /**
+     * Archive location
+     *
+     * @param string $locationHash
+     * @param string $userHash
+     * @return bool
+     */
+    public function archiveLocation(string $locationHash, string $userHash)
+    {
+        return $this->addressTable->archive($locationHash,$userHash);
     }
 }

@@ -13,32 +13,6 @@ use Slim\Container;
 
 class LocationValidation extends AppValidation
 {
-    /**
-     * @var GroupRepository
-     */
-    private $groupRepository;
-
-    /**
-     * @var TrophyRepository
-     */
-    private $trophyRepository;
-
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * LocationValidation constructor.
-     * @param Container $container
-     * @throws ContainerException
-     */
-    public function __construct(Container $container)
-    {
-        $this->userRepository = $container->get(UserRepository::class);
-        $this->trophyRepository = $container->get(TrophyRepository::class);
-    }
-
     public function validateCreation(
         string $wavetrophyHash,
         string $roadGroupHash,
@@ -66,31 +40,20 @@ class LocationValidation extends AppValidation
     }
 
     /**
-     * Validate wavetrophy hash.
+     * Validate deletion of a location
      *
      * @param string $wavetrophyHash
-     * @param ValidationContext $validationContext
-     */
-    private function validateWavetrophyHash(string $wavetrophyHash, ValidationContext $validationContext)
-    {
-        $trophyExists = $this->trophyRepository->existsTrophy($wavetrophyHash);
-        if (!$trophyExists) {
-            $validationContext->setError('wavetrophy_hash', __('Wavetrophy does not exist'));
-        }
-    }
-
-    /**
-     * Validate road group hash.
-     *
      * @param string $roadGroupHash
-     * @param ValidationContext $validationContext
+     * @param string $locationHash
+     * @return ValidationContext
      */
-    private function validateRoadGroupHash(string $roadGroupHash, ValidationContext $validationContext)
+    public function validateDeletion(string $wavetrophyHash, string $roadGroupHash, string $locationHash)
     {
-        $groupExists = $this->groupRepository->existsGroup($roadGroupHash);
-        if (!$groupExists) {
-            $validationContext->setError('road_group_hash', __('Road group does not exist'));
-        }
+        $validationContext = new ValidationContext(__('Deleting location failed'));
+        $this->validateWavetrophyHash($wavetrophyHash, $validationContext);
+        $this->validateRoadGroupHash($roadGroupHash, $validationContext);
+        $this->validateLocationHash($locationHash, $validationContext);
+        return $validationContext;
     }
 
     /**

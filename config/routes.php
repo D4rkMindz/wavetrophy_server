@@ -24,14 +24,24 @@ $app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}', 'App\Contro
 $app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/stream', route(['App\Controller\StreamController', 'getStreamAction']))->setName('api.get.v1.trophies.single.groups.single.stream');
 
 // todo test
-$app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_has}/locations', route(['App\Controller\LocationController', 'createLocationAction']))->setName('api.post.v1.trophies.single.locations');
+$app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations', route(['App\Controller\LocationController', 'createLocationAction']))->setName('api.post.v1.trophies.single.groups.single.locations');
+// todo test
+$app->delete('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations/{location_hash}', route(['App\Controller\LocationController', 'deleteLocationAction']))->setName('api.delete.v1.trophies.single.groups.single.locations');
 
-// TODO continue here 20 8 2018
-$app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_has}/locations/{location_hash}/events', route(['App\Controller\EventController', 'createEventAction']))->setName('api.post.v1.trophies.single.locations.single.events');
+// todo test
+$app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations/{location_hash}/events', route(['App\Controller\EventController', 'createEventAction']))->setName('api.post.v1.trophies.single.groups.single.locations.single.events');
+// todo test
+$app->delete('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations/{location_hash}/events/{event_hash}', route(['App\Controller\EventController', 'deleteEventAction']))->setName('api.delete.v1.trophies.single.groups.single.locations.single.events');
+
+// todo test
+$app->post('/v1/trophies/{wavetrophy_hash}/groups', route(['App\Controller\GroupController', 'createGroupAction']))->setName('api.post.v1.trophies.single.groups');
+// todo test
+$app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}', route(['App\Controller\GroupController', 'deleteGroupAction']))->setName('api.delete.v1.trophies.single.groups');
 
 /**
  * Get contacts for WaveTrophy
  */
 $app->get('/v1/trophies/{wavetrophy_hash}/contacts', route(['App\Controller\ContactController', 'getContactsAction']))->setName('api.get.v1.trophies.single.contacts');
 
+// todo test
 $app->post('/v1/trophies/{wavetrophy_hash}/contacts', route(['App\Controller\ContactController', 'createContactAction']))->setName('api.post.v1.trophies.single.contacts');

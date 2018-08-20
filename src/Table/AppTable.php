@@ -5,6 +5,7 @@ namespace App\Table;
 use Cake\Database\Connection;
 use Cake\Database\Query;
 use Cake\Database\StatementInterface;
+use Exception;
 
 /**
  * Class AppTable.
@@ -137,7 +138,7 @@ abstract class AppTable
      * @param string $userHash
      * @return StatementInterface
      */
-    public function modify(array $row, array $where,string $userHash): StatementInterface
+    public function modify(array $row, array $where, string $userHash): StatementInterface
     {
         $row['modified_at'] = date('Y-m-d H:i:s');
         $row['modified_by'] = $userHash;
@@ -152,12 +153,21 @@ abstract class AppTable
     /**
      * Delete from database.
      *
-     * @param string $id
-     *
-     * @return StatementInterface
+     * @param string $hash
+     * @param string $userHash
+     * @return bool
      */
-    public function delete(string $id): StatementInterface
+    public function archive(string $hash, string $userHash): bool
     {
-        return $this->connection->delete($this->table, ['id' => $id]);
+        $archivedData = [
+            'archived_at' => date('Y-m-d H:i:s'),
+            'archived_by' => $userHash
+        ];
+        try {
+            $this->connection->update($this->table, $archivedData, ['hash' => $hash]);
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
     }
 }

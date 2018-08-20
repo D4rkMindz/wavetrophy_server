@@ -1,13 +1,11 @@
 <?php
 
-use App\Service\Authentication\AuthenticationValidation;
 use App\Service\Validation\ContactValidation;
+use App\Service\Validation\EventValidation;
+use App\Service\Validation\GroupValidation;
 use App\Service\Validation\LocationValidation;
-use Aura\Session\Session;
-use Aura\Session\SessionFactory;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
-use Interop\Container\Exception\ContainerException;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Odan\Twig\TwigAssetsExtension;
@@ -124,6 +122,26 @@ $container[ContactValidation::class] = function (Container $container): ContactV
  */
 $container[LocationValidation::class] = function (Container $container): LocationValidation {
     return new LocationValidation($container);
+};
+
+/**
+ * Event Validation container.
+ *
+ * @param Container $container
+ * @return EventValidation
+ */
+$container[EventValidation::class] = function (Container $container): EventValidation {
+    return new EventValidation($container);
+};
+
+/**
+ * Group Validation container.
+ *
+ * @param Container $container
+ * @return GroupValidation
+ */
+$container[GroupValidation::class] = function (Container $container): GroupValidation {
+    return new GroupValidation($container);
 };
 
 /**

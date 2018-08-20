@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Service\UUID\UUID;
 use App\Table\GroupTable;
 use Interop\Container\Exception\ContainerException;
 use Slim\Container;
@@ -27,7 +28,7 @@ class GroupRepository extends AppRepository
 
     /**
      * Get all groups
-     * 
+     *
      * @param string $trophyHash
      * @param int $limit
      * @param int $page
@@ -89,5 +90,35 @@ class GroupRepository extends AppRepository
     public function existsGroup(string $roadGroupHash)
     {
         return $this->exists($this->groupTable, ['hash' => $roadGroupHash]);
+    }
+
+    /**
+     * Create group.
+     *
+     * @param string $userHash
+     * @param string $wavetrophyHash
+     * @param string $name
+     * @return string
+     */
+    public function createGroup(string $userHash, string $wavetrophyHash, string $name)
+    {
+        $row = [
+            'hash' => UUID::generate(),
+            'wavetrophy_hash' => $wavetrophyHash,
+            'name' => $name,
+        ];
+        return $this->groupTable->insert($row, $userHash);
+    }
+
+    /**
+     * Archive group
+     *
+     * @param string $userHash
+     * @param string $groupHash
+     * @return bool
+     */
+    public function archiveGroup(string $userHash, string $groupHash)
+    {
+        return $this->groupTable->archive($groupHash, $userHash);
     }
 }
