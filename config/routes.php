@@ -23,6 +23,12 @@ $app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}', 'App\Contro
  */
 $app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/stream', route(['App\Controller\StreamController', 'getStreamAction']))->setName('api.get.v1.trophies.single.groups.single.stream');
 
+// todo test
+$app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_has}/locations', route(['App\Controller\LocationController', 'createLocationAction']))->setName('api.post.v1.trophies.single.locations');
+
+// TODO continue here 20 8 2018
+$app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_has}/locations/{location_hash}/events', route(['App\Controller\EventController', 'createEventAction']))->setName('api.post.v1.trophies.single.locations.single.events');
+
 /**
  * Get contacts for WaveTrophy
  */

@@ -2,6 +2,7 @@
 
 use App\Service\Authentication\AuthenticationValidation;
 use App\Service\Validation\ContactValidation;
+use App\Service\Validation\LocationValidation;
 use Aura\Session\Session;
 use Aura\Session\SessionFactory;
 use Cake\Database\Connection;
@@ -105,8 +106,24 @@ $container[Connection::class] = function (Container $container): Connection {
     return $db;
 };
 
+/**
+ * Contact Validation container.
+ *
+ * @param Container $container
+ * @return ContactValidation
+ */
 $container[ContactValidation::class] = function (Container $container): ContactValidation {
     return new ContactValidation($container);
+};
+
+/**
+ * Location Validation container.
+ *
+ * @param Container $container
+ * @return LocationValidation
+ */
+$container[LocationValidation::class] = function (Container $container): LocationValidation {
+    return new LocationValidation($container);
 };
 
 /**

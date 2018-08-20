@@ -79,4 +79,15 @@ class GroupRepository extends AppRepository
         $row = $query->execute()->fetchAll('assoc');
         return $row ?: [];
     }
+
+    /**
+     * Check if group exists
+     *
+     * @param string $roadGroupHash
+     * @return bool
+     */
+    public function existsGroup(string $roadGroupHash)
+    {
+        return $this->exists($this->groupTable, ['hash' => $roadGroupHash]);
+    }
 }
