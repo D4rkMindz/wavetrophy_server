@@ -126,6 +126,7 @@ $container[TeamTable::class] = function (Container $container) {
 $container[TrophyTable::class] = function (Container $container) {
     return new TrophyTable($container->get(Connection::class));
 };
+
 /**
  * UserTable container.
  *

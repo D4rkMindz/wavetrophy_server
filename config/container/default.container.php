@@ -1,5 +1,6 @@
 <?php
 
+use App\Service\Login\LoginValidation;
 use App\Service\Validation\ContactValidation;
 use App\Service\Validation\EventValidation;
 use App\Service\Validation\GroupValidation;
@@ -122,6 +123,16 @@ $container[ContactValidation::class] = function (Container $container): ContactV
  */
 $container[LocationValidation::class] = function (Container $container): LocationValidation {
     return new LocationValidation($container);
+};;
+
+/**
+ * Login Validation container.
+ *
+ * @param Container $container
+ * @return LoginValidation
+ */
+$container[LoginValidation::class] = function (Container $container): LoginValidation {
+    return new LoginValidation($container);
 };
 
 /**

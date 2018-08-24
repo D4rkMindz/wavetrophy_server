@@ -2,14 +2,9 @@
 
 namespace App\Repository;
 
-use App\Service\Mail\MailToken;
-use App\Table\CityTable;
-use App\Table\EmailTokenTable;
-use App\Table\LanguageTable;
 use App\Table\PermissionTable;
 use App\Table\UserTable;
 use App\Util\Formatter;
-use App\Util\Role;
 use Cake\Database\Query;
 use Exception;
 use libphonenumber\NumberParseException;
@@ -26,10 +21,6 @@ class UserRepository extends AppRepository
      */
     private $userTable;
 
-    /**
-     * @var LanguageTable
-     */
-    private $languageTable;
 
     /**
      * @var PermissionTable
@@ -42,11 +33,6 @@ class UserRepository extends AppRepository
     private $formatter;
 
     /**
-     * @var EmailTokenTable
-     */
-    private $emailTokenTable;
-
-    /**
      * UserRepository constructor.
      *
      * @param Container $container
@@ -55,9 +41,7 @@ class UserRepository extends AppRepository
     public function __construct(Container $container)
     {
         $this->userTable = $container->get(UserTable::class);
-        $this->languageTable = $container->get(LanguageTable::class);
         $this->permissionTable = $container->get(PermissionTable::class);
-        $this->emailTokenTable = $container->get(EmailTokenTable::class);
 
         $this->formatter = new Formatter();
     }
@@ -119,47 +103,47 @@ class UserRepository extends AppRepository
         return password_verify($password, $row['password']);
     }
 
-    /**
-     * Get all users.
-     *
-     * @param int $limit
-     * @param int $page
-     * @return array with userData
-     */
-    public function getUsers(int $limit, int $page): array
-    {
-        $query = $this->getUserQuery()->limit($limit)->page($page);
-        $users = $query->execute()->fetchAll('assoc');
+//    /**
+//     * Get all users.
+//     *
+//     * @param int $limit
+//     * @param int $page
+//     * @return array with userData
+//     */
+//    public function getUsers(int $limit, int $page): array
+//    {
+//        $query = $this->getUserQuery()->limit($limit)->page($page);
+//        $users = $query->execute()->fetchAll('assoc');
+//
+//        if (empty($users)) {
+//            return [];
+//        }
+//
+//        foreach ($users as $key => $user) {
+//            $users[$key] = $this->formatter->formatUser($user);
+//        }
+//
+//        return $users;
+//    }
 
-        if (empty($users)) {
-            return [];
-        }
-
-        foreach ($users as $key => $user) {
-            $users[$key] = $this->formatter->formatUser($user);
-        }
-
-        return $users;
-    }
-
-    /**
-     * Get single user.
-     *
-     * @param string $hash
-     * @return array with single user
-     */
-    public function getUser(string $hash): array
-    {
-        $userTableName = $this->userTable->getTablename();
-        $query = $this->getUserQuery();
-        $query->where([$userTableName . '.hash' => $hash]);
-        $user = $query->execute()->fetch('assoc');
-        if (empty($user)) {
-            return [];
-        }
-
-        return $this->formatter->formatUser($user);
-    }
+//    /**
+//     * Get single user.
+//     *
+//     * @param string $hash
+//     * @return array with single user
+//     */
+//    public function getUser(string $hash): array
+//    {
+//        $userTableName = $this->userTable->getTablename();
+//        $query = $this->getUserQuery();
+//        $query->where([$userTableName . '.hash' => $hash]);
+//        $user = $query->execute()->fetch('assoc');
+//        if (empty($user)) {
+//            return [];
+//        }
+//
+//        return $this->formatter->formatUser($user);
+//    }
 
     /**
      * Get permission.
@@ -190,34 +174,34 @@ class UserRepository extends AppRepository
         return !empty($row) ? $row : [];
     }
 
-    /**
-     * Insert user.
-     *
-     * @param string $email
-     * @param string $firstName
-     * @param string $lastName
-     * @param string $postcode
-     * @param string $username
-     * @param string $password
-     * @param string $ceviName
-     * @param string $languageHash
-     * @param string $departmentHash
-     * @return array last inserted user id
-     */
-    public function signupUser(
-        string $email,
-        string $firstName,
-        string $lastName,
-        string $postcode,
-        string $username,
-        string $password,
-        string $ceviName,
-        string $languageHash,
-        string $departmentHash
-    ): array
-    {
-
-    }
+//    /**
+//     * Insert user.
+//     *
+//     * @param string $email
+//     * @param string $firstName
+//     * @param string $lastName
+//     * @param string $postcode
+//     * @param string $username
+//     * @param string $password
+//     * @param string $ceviName
+//     * @param string $languageHash
+//     * @param string $departmentHash
+//     * @return array last inserted user id
+//     */
+//    public function signupUser(
+//        string $email,
+//        string $firstName,
+//        string $lastName,
+//        string $postcode,
+//        string $username,
+//        string $password,
+//        string $ceviName,
+//        string $languageHash,
+//        string $departmentHash
+//    ): array
+//    {
+//
+//    }
 
     /**
      * Get email token by id
@@ -225,14 +209,14 @@ class UserRepository extends AppRepository
      * @param string $emailToken
      * @return string
      */
-    public function getUserIdByEmailToken(string $emailToken): string
-    {
-        $query = $this->emailTokenTable->newSelect();
-        $query->select(['user_hash'])
-            ->where(['token' => $emailToken, 'issued_at <= ' => date('Y-m-d H:i:s')]);
-        $row = $query->execute()->fetch('assoc');
-        return !empty($row) ? $row['user_hash'] : '';
-    }
+//    public function getUserIdByEmailToken(string $emailToken): string
+//    {
+//        $query = $this->emailTokenTable->newSelect();
+//        $query->select(['user_hash'])
+//            ->where(['token' => $emailToken, 'issued_at <= ' => date('Y-m-d H:i:s')]);
+//        $row = $query->execute()->fetch('assoc');
+//        return !empty($row) ? $row['user_hash'] : '';
+//    }
 
     /**
      * Confirm email as verified

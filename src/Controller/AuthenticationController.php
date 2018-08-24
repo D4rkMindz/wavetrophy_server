@@ -15,19 +15,17 @@ use Slim\Http\Response;
 class AuthenticationController extends AppController
 {
     /**
+     * @var Logger
+     */
+    protected $logger;
+    /**
      * @var LoginValidation
      */
     private $loginValidation;
-
     /**
      * @var UserRepository
      */
     private $userRepository;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
 
     /**
      * AuthenticationController constructor.
@@ -64,11 +62,11 @@ class AuthenticationController extends AppController
         $data = json_decode($json, true);
         $username = (string)$data['username'];
         $password = (string)$data['password'];
-        $lang = (string)$request->getParam('lang');
+//        $lang = (string)$request->getParam('lang');
         if ($this->loginValidation->canLogin($username, $password)) {
             $userHash = $this->userRepository->getHashByUsername($username);
             $expireOffset = 60 * 15; // 15 Minutes
-            $token = JWTFactory::generate($username, $userHash, $lang, $this->secret, $expireOffset);
+            $token = JWTFactory::generate($username, $userHash, $this->secret, $expireOffset);
             $expiresAt = (time() + $expireOffset) * 1000;
             $this->logger->info(sprintf('%s (ID: %s)issued a token. Expires at: %s', $username, $userHash, $expiresAt));
             return $this->json($response, ['token' => $token, 'expires_at' => $expiresAt, 'user_hash' => $userHash]);

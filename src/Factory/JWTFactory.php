@@ -19,7 +19,7 @@ class JWTFactory
      * @param string $scope
      * @return string
      */
-    public static function generate(string $username, string $userHash, string $lang, string $secret, int $expireOffset = 60 * 60 * 8, string $scope = '')
+    public static function generate(string $username, string $userHash, string $secret, int $expireOffset = 60 * 60 * 8, string $scope = '')
     {
         $tokenData = [
             'iss' => 'cevi-web',
@@ -31,7 +31,6 @@ class JWTFactory
                 'expires_at' => date('Y-m-d H:i:s', time() + $expireOffset),
                 'username' => $username,
                 'user_hash' => $userHash,
-                'lang' => $lang
             ]
         ];
         return $token = JWT::encode($tokenData, $secret);

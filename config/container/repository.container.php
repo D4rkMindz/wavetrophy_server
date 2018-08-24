@@ -1,6 +1,7 @@
 <?php
 
 use App\Repository\ContactRepository;
+use App\Repository\EventRepository;
 use App\Repository\GroupRepository;
 use App\Repository\LocationRepository;
 use App\Repository\StreamRepository;
@@ -64,4 +65,13 @@ $container[ContactRepository::class] = function (Container $container) {
  * @return LocationRepository */
 $container[LocationRepository::class] = function (Container $container) {
     return new LocationRepository($container);
+};
+
+/**
+ * Trophy Event Repository container.
+ *
+ * @param Container $container
+ * @return EventRepository */
+$container[EventRepository::class] = function (Container $container) {
+    return new EventRepository($container);
 };
