@@ -63,7 +63,7 @@ class TrophyController extends AppController
             );
         }
         // TODO get current trophy
-        return $this->json($response, JSONResponse::success(['trohpies' => $trophies, 'current' => 'wave2018']));
+        return $this->json($response, JSONResponse::success(['trophies' => $trophies, 'current' => 'wave2018']));
     }
 
     /**
