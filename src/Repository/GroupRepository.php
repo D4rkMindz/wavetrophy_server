@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Service\UUID\UUID;
 use App\Table\GroupTable;
+use App\Table\TrophyTable;
 use Interop\Container\Exception\ContainerException;
 use Slim\Container;
 
@@ -17,6 +18,11 @@ class GroupRepository extends AppRepository
     private $groupTable;
 
     /**
+     * @var TrophyTable
+     */
+    private $wavetrophyTable;
+
+    /**
      * GroupRepository constructor.
      * @param Container $container
      * @throws ContainerException
@@ -24,6 +30,7 @@ class GroupRepository extends AppRepository
     public function __construct(Container $container)
     {
         $this->groupTable = $container->get(GroupTable::class);
+        $this->wavetrophyTable = $container->get(TrophyTable::class);
     }
 
     /**
@@ -36,19 +43,30 @@ class GroupRepository extends AppRepository
      */
     public function getAllGroups(string $trophyHash, int $limit = 1000, int $page = 1): array
     {
+        $group = $this->groupTable->getTablename();
+        $wavetrophy = $this->wavetrophyTable->getTablename();
         $fields = [
-            'hash',
-            'name',
-            'created_at',
-            'created_by',
-            'modified_at',
-            'modified_by',
-            'archived_at',
-            'archived_by',
+            'hash' => $group . '.hash',
+            'name' => $group . '.name',
+            'created_at' => $group . '.created_at',
+            'created_by' => $group . '.created_by',
+            'modified_at' => $group . '.modified_at',
+            'modified_by' => $group . '.modified_by',
+            'archived_at' => $group . '.archived_at',
+            'archived_by' => $group . '.archived_by',
+            'wavetrophy_hash' => $wavetrophy . '.hash',
+            'wavetrophy_name' => $wavetrophy . '.name'
         ];
         $query = $this->groupTable->newSelect();
         $query->select($fields)
-            ->where(['wavetrophy_hash' => $trophyHash])
+            ->join([
+                [
+                    'table' => 'wavetrophy',
+                    'type' => 'LEFT',
+                    'conditions' => $group . '.wavetrophy_hash = ' . $wavetrophy . '.hash',
+                ],
+            ])
+            ->where([$group.'.wavetrophy_hash' => $trophyHash])
             ->limit($limit)
             ->page($page);
         $rows = $query->execute()->fetchAll('assoc');
@@ -64,18 +82,29 @@ class GroupRepository extends AppRepository
      */
     public function getGroup(string $trophyHash, string $groupHash)
     {
+        $group = $this->groupTable->getTablename();
+        $wavetrophy = $this->wavetrophyTable->getTablename();
         $fields = [
-            'hash',
-            'name',
-            'created_at',
-            'created_by',
-            'modified_at',
-            'modified_by',
-            'archived_at',
-            'archived_by',
+            'hash' => $group . '.hash',
+            'name' => $group . '.name',
+            'created_at' => $group . '.created_at',
+            'created_by' => $group . '.created_by',
+            'modified_at' => $group . '.modified_at',
+            'modified_by' => $group . '.modified_by',
+            'archived_at' => $group . '.archived_at',
+            'archived_by' => $group . '.archived_by',
+            'wavetrophy_hash' => $wavetrophy . '.hash',
+            'wavetrophy_name' => $wavetrophy . '.name'
         ];
         $query = $this->groupTable->newSelect();
         $query->select($fields)
+            ->join([
+                [
+                    'table' => 'wavetrophy',
+                    'type' => 'LEFT',
+                    'conditions' => $group . '.wavetrophy_hash = ' . $wavetrophy . '.hash',
+                ],
+            ])
             ->where(['wavetrophy_hash' => $trophyHash, 'hash' => $groupHash]);
         $row = $query->execute()->fetchAll('assoc');
         return $row ?: [];

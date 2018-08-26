@@ -62,9 +62,6 @@ class GroupController extends AppController
                 )
             );
         }
-        foreach ($groups as $key => $group) {
-            $groups[$key]['wavetrophy_hash'] = $args['wavetrophy_hash'];
-        }
         return $this->json($response, JSONResponse::success(['groups' => $groups]));
     }
 
