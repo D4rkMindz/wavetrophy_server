@@ -63,48 +63,47 @@ $app->add(function (Request $request, Response $response, $next) use ($container
     return $next($request, $response);
 });
 
-$jwt = $container->get('settings')->get('jwt');
-if ($jwt['active']) {
-    $secret = $container->get('settings')->get('jwt')['secret'];
-    $app->add(new JwtAuthentication([
-        'secret' => $secret,
-        'header' => 'X-Token',
-        'message' => __('Authentication failed'),
-        'callback' => function (Request $request, Response $response, array $arguments) use ($container) {
-            $container['jwt_decoded'] = $decoded = (array)$arguments['decoded'];
-            $method = $request->getMethod();
-            $path = $request->getRequestTarget();
-            // todo disable useless logging
-            $container->get(\Monolog\Logger::class)->info(sprintf('[%s] %s checking permission ...', $method, $path));
-            $permission = new Permissions();
-            $userId = $decoded['data']->user_hash;
-            $level = $permission->{strtolower($method)};
-            // return true if the user has the correct permission
-            return $container->get(Role::class)->hasPermission($level, $userId, $path, $method);
-        },
-        'error' => function (Request $request, Response $response, $message) use ($container) {
-            $userId = '[User ID not known]';
-            if ($container->has('jwt_decoded')) {
-                $decoded = $container['jwt_decoded'];
-                $userId = $decoded['data']->user_id;
-            }
-            /** @var \Monolog\Logger $logger */
-            $logger = $container->get(\Monolog\Logger::class);
+$secret = $container->get('settings')->get('jwt')['secret'];
+$app->add(new JwtAuthentication([
+    'secret' => $secret,
+    'header' => 'X-Token',
+    'message' => __('Authentication failed'),
+    'callback' => function (Request $request, Response $response, array $arguments) use ($container) {
+        $container['jwt_decoded'] = $decoded = (array)$arguments['decoded'];
+        $method = $request->getMethod();
+        $path = $request->getRequestTarget();
+        // todo disable useless logging
+        $container->get(\Monolog\Logger::class)->info(sprintf('[%s] %s checking permission ...', $method, $path));
+        return true;
+        // todo implement permmission
+        //        $permission = new Permissions();
+//        $userId = $decoded['data']->user_hash;
+//        $level = $permission->{strtolower($method)};
+//        // return true if the user has the correct permission
+//        return $container->get(Role::class)->hasPermission($level, $userId, $path, $method);
+    },
+    'error' => function (Request $request, Response $response, $message) use ($container) {
+        $userId = '[User ID not known]';
+        if ($container->has('jwt_decoded')) {
+            $decoded = $container['jwt_decoded'];
+            $userId = $decoded['data']->user_id;
+        }
+        /** @var \Monolog\Logger $logger */
+        $logger = $container->get(\Monolog\Logger::class);
 
-            /** @var Request $request */
-            $request = $container->get("request");
-            $method = $request->getMethod();
-            $route = $request->getRequestTarget();
-            $ip = $request->getServerParam("REMOTE_ADDR");
+        /** @var Request $request */
+        $request = $container->get("request");
+        $method = $request->getMethod();
+        $route = $request->getRequestTarget();
+        $ip = $request->getServerParam("REMOTE_ADDR");
 
-            $error = sprintf("User %s tried to get [%s] %s from %s", $userId, $method, $route, $ip);
-            $logger->error($error);
-            $errorMessage = JsonResponseFactory::error(['message' => $message['message']]);
-            return $response->withStatus(403)->withJson($errorMessage);
-        },
-//        'rules' => [new PassthroughRule($container)],
-    ]));
-}
+        $error = sprintf("User %s tried to get [%s] %s from %s", $userId, $method, $route, $ip);
+        $logger->error($error);
+        $errorMessage = JsonResponseFactory::error(['message' => $message['message']]);
+        return $response->withStatus(403)->withJson($errorMessage);
+    },
+    'rules' => [new PassthroughRule($container)],
+]));
 
 /**
  * Logging middleware
@@ -164,8 +163,8 @@ $app->add(function (Request $request, Response $response, $next) use ($container
     $corsEnabled = $container->get('settings')->get('enableCORS');
     if ($corsEnabled) {
         $response = $response->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Headers', 'X-App-Language, X-Token, Content-Type')
-            ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+            ->withHeader('Access-Control-Allow-Headers', 'Authentication, X-App-Language, X-Token, Content-Type')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     }
     return $response;
 });

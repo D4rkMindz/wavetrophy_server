@@ -105,7 +105,7 @@ class GroupRepository extends AppRepository
                     'conditions' => $group . '.wavetrophy_hash = ' . $wavetrophy . '.hash',
                 ],
             ])
-            ->where(['wavetrophy_hash' => $trophyHash, 'hash' => $groupHash]);
+            ->where([$group . '.wavetrophy_hash' => $trophyHash, $group .'.hash' => $groupHash]);
         $row = $query->execute()->fetchAll('assoc');
         return $row ?: [];
     }

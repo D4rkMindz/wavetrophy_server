@@ -17,11 +17,11 @@ class GroupValidation extends AppValidation
      * @param string $name
      * @return ValidationContext
      */
-    public function validateCreation(string $wavetrophyHash, string $name)
+    public function validateCreation(string $wavetrophyHash, ?string $name)
     {
         $validationContext = new ValidationContext(__('Group information invalid'));
         $this->validateWavetrophyHash($wavetrophyHash, $validationContext);
-        $this->validateName($name, $validationContext);
+        $this->validateName($validationContext, $name);
         return $validationContext;
     }
 
@@ -46,7 +46,7 @@ class GroupValidation extends AppValidation
      * @param string $name
      * @param ValidationContext $validationContext
      */
-    private function validateName(string $name, ValidationContext $validationContext)
+    private function validateName(ValidationContext $validationContext, ?string $name)
     {
         $this->assertNotEmpty($name, 'name', $validationContext);
         $this->assertStringMinLength($name, 'name', 3, $validationContext);

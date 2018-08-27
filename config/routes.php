@@ -23,6 +23,7 @@ $app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}', 'App\Contro
  */
 $app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/stream', route(['App\Controller\StreamController', 'getStreamAction']))->setName('api.get.v1.trophies.single.groups.single.stream');
 
+$app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations', route(['App\Controller\LocationController', 'getAllLocationsAction']))->setName('api.get.v1.trophies.single.groups.single.locations');
 // todo test
 $app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations', route(['App\Controller\LocationController', 'createLocationAction']))->setName('api.post.v1.trophies.single.groups.single.locations');
 // todo test

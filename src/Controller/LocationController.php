@@ -42,6 +42,7 @@ class LocationController extends AppController
         $this->locationValidation = $container->get(LocationValidation::class);
     }
 
+
     /**
      * Create Location.
      *

@@ -8,6 +8,7 @@ use App\Service\UUID\UUID;
 use App\Table\AddressImageTable;
 use App\Table\AddressTable;
 use App\Table\ImageTable;
+use App\Util\Formatter;
 use Interop\Container\Exception\ContainerException;
 use Slim\Container;
 
@@ -129,6 +130,6 @@ class LocationRepository extends AppRepository
      */
     public function archiveLocation(string $locationHash, string $userHash)
     {
-        return $this->addressTable->archive($locationHash,$userHash);
+        return $this->addressTable->archive($locationHash, $userHash);
     }
 }

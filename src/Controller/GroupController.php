@@ -99,7 +99,7 @@ class GroupController extends AppController
      */
     public function createGroupAction(Request $request, Response $response, array $args): ResponseInterface
     {
-        $wavetrohpyHash = $args['wavetrohpy_hash'];
+        $wavetrohpyHash = $args['wavetrophy_hash'];
         $json = $request->getBody()->__toString();
         $data = json_decode($json, true);
         $name = array_value('name', $data);

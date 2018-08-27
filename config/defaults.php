@@ -20,17 +20,13 @@ $config['jwt'] = [
     'secret' => '',
     'passthrough' => [
         '/' => ['GET'],
-        '/v2/users/signup' => ['POST'],
-        '/v2/users/verify' => ['POST'],
-        '/v2/auth' => ['POST'],
-        '/v2/articles/qualities' => ['GET'],
-        '/v2/genders' => ['GET'],
-        '/v2/events' => ['GET'],
-        '/v2/cities' => ['GET'],
-        '/v2/departmentgroups' => ['GET'],
-        '/v2/departments' => ['GET'],
-        '/v2/departments/{department_hash:[0-9]+}' => ['GET'],
-        '/v2/swagger' => ['GET'],
+        '/v1/auth' => ['POST'],
+        '/v1/trophies' => ['GET'],
+        '/v1/trophies/{wavetrophy_hash}' => ['GET'],
+        '/v1/trophies/{wavetrophy_hash}/groups' => ['GET'],
+        '/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}' => ['GET'],
+        '/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/stream' => ['GET'],
+        '/v1/trophies/{wavetrophy_hash}/contacts' => ['GET'],
     ]
 ];
 
