@@ -10,10 +10,10 @@ use App\Service\Response\InternalErrorCode;
 use App\Service\Response\JSONResponse;
 use App\Service\Validation\GroupValidation;
 use Interop\Container\Exception\ContainerException;
+use Psr\Http\Message\ResponseInterface;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Psr\Http\Message\ResponseInterface;
 
 class GroupController extends AppController
 {
@@ -116,12 +116,32 @@ class GroupController extends AppController
     }
 
     /**
+     * Controller Action.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return ResponseInterface
+     */
+    public function updateGroupAction(Request $request, Response $response, array $args): ResponseInterface
+    {
+        $name = json_decode($request->getBody()->__toString(), true)['name'];
+        $validationContext = $this->groupValidation->validateUpdate($name);
+        if ($validationContext->fails()) {
+            return $this->errorFromValidationContext($response, $validationContext);
+        }
+
+        $this->groupRepository->updateGroup($this->jwt['user_hash'], $args['road_group_hash'], $name);
+
+        return $this->json($response, ['message' => __('Updated group successfully')]);
+    }
+
+    /**
      * @param $request Request
      * @param $response Response
      * @param array $args
      * @return ResponseInterface
      */
-    public function deleteEventAction(Request $request, Response $response, array $args): ResponseInterface
+    public function deleteGroupAction(Request $request, Response $response, array $args): ResponseInterface
     {
         $wavetrophyHash = $args['wavetrophy_hash'];
         $roadGroupHash = $args['road_group_hash'];
@@ -131,7 +151,7 @@ class GroupController extends AppController
             return $this->errorFromValidationContext($response, $validationContext);
         }
 
-        $eventArchived = $this->groupRepository->archiveGroup($roadGroupHash, $this->jwt['user_hash']);
+        $eventArchived = $this->groupRepository->archiveGroup($this->jwt['user_hash'], $roadGroupHash);
         if (!$eventArchived) {
             $responseData = JSONResponse::error(InternalErrorCode::ACTION_FAILED, ['error' => __('Group not deleted')], __('Event not deleted'));
             return $this->error($response, __('Group not deleted'), 422, $responseData);

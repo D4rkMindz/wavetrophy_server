@@ -37,7 +37,9 @@ $app->delete('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations/
 // todo test
 $app->post('/v1/trophies/{wavetrophy_hash}/groups', route(['App\Controller\GroupController', 'createGroupAction']))->setName('api.post.v1.trophies.single.groups');
 // todo test
-$app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}', route(['App\Controller\GroupController', 'deleteGroupAction']))->setName('api.delete.v1.trophies.single.groups');
+$app->put('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}', 'App\Controller\GroupController:updateGroupAction')->setName('api.put.v1.trophies.single.groups.single');
+
+$app->delete('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}', 'App\Controller\GroupController:deleteGroupAction')->setName('api.delete.v1.trophies.single.groups.single');
 
 /**
  * Get contacts for WaveTrophy

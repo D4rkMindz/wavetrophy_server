@@ -57,10 +57,10 @@ interface TableInterface
      * Insert into database.
      *
      * @param array $row with data to insertUser into database
-     * @param string $id
-     * @return string last inserted ID
+     * @param string $userHash
+     * @return StatementInterface last inserted ID
      */
-    public function insert(array $row): StatementInterface;
+    public function insert(array $row, string $userHash): string;
 
     /**
      * Update database
@@ -75,25 +75,25 @@ interface TableInterface
     /**
      * Delete from database.
      *
-     * @param string $executorId
+     * @param string $userHash
      * @param array $where
      * @return bool
      */
-    public function archive(string $executorId, array $where): bool;
+    public function archive(string $hash, string $userHash): bool;
 
-    /**
-     * Unarchive element.
-     *
-     * @param string $executorId
-     * @param array $where
-     * @return bool true if unarchived successfully
-     */
-    public function unarchive(string $executorId, array $where): bool;
-
-    /**
-     * Check if table has not metadata like created, modified and archived information.
-     *
-     * @return bool
-     */
-    public function hasMetadata(): bool;
+//    /**
+//     * Unarchive element.
+//     *
+//     * @param string $executorId
+//     * @param array $where
+//     * @return bool true if unarchived successfully
+//     */
+//    public function unarchive(string $executorId, array $where): bool;
+//
+//    /**
+//     * Check if table has not metadata like created, modified and archived information.
+//     *
+//     * @return bool
+//     */
+//    public function hasMetadata(): bool;
 }

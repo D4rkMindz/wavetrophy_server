@@ -25,6 +25,13 @@ class GroupValidation extends AppValidation
         return $validationContext;
     }
 
+    public function validateUpdate(?string $name)
+    {
+        $validationContext = new ValidationContext(__('Group information invalid'));
+        $this->validateName($validationContext, $name);
+        return $validationContext;
+    }
+
     /**
      * Validate deletion of a location
      *

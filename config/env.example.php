@@ -1,5 +1,10 @@
 <?php
-$config['displayErrorDetails'] = true;
+$env['displayErrorDetails'] = false;
+$env['debug'] = false;
+$env['enableCORS'] = true;
+$env['jwt']['secret'] = 'somesecret';
+
+
 
 $env['db']['host'] = '';
 $env['db']['port'] = '';

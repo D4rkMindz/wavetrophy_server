@@ -140,6 +140,19 @@ class GroupRepository extends AppRepository
     }
 
     /**
+     * Modify group
+     *
+     * @param string $userHash
+     * @param string $groupHash
+     * @param string $name
+     * @return \Cake\Database\StatementInterface
+     */
+    public function updateGroup(string $userHash, string $groupHash, string $name)
+    {
+        return $this->groupTable->modify(['name' => $name], ['hash' => $groupHash], $userHash);
+    }
+
+    /**
      * Archive group
      *
      * @param string $userHash

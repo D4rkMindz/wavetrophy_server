@@ -10,7 +10,7 @@ use Exception;
 /**
  * Class AppTable.
  */
-abstract class AppTable
+abstract class AppTable implements TableInterface
 {
     // TODO reimplement TableInterface
     protected $table = null;
