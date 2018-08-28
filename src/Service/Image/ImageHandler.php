@@ -16,7 +16,7 @@ class ImageHandler
         $filename = sprintf('%s.%0.8s', $basename, $extension);
 
         $publicPath = __DIR__ . '/../../../public/';
-        $path = 'img/i_' . date('ymd') . '/';
+        $path = 'img/cache/i_' . date('ymd') . '/';
         if (!is_dir($path)) {
             mkdir($path);
         }

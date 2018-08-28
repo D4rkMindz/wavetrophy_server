@@ -29,6 +29,12 @@ build/
 !tmp/
 tmp/*
 !tmp/.htaccess
+
+#Image cache folder
+!public/img/cache
+public/img/cache/*
+!public/img/cache/empty
+
 #cache/ folder with empty file
 !tmp/cache/
 tmp/cache/*
