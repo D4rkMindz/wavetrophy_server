@@ -1,5 +1,6 @@
 <?php
 
+use App\Service\Image\ImageHandler;
 use App\Service\Login\LoginValidation;
 use App\Service\Validation\ContactValidation;
 use App\Service\Validation\EventValidation;
@@ -133,6 +134,16 @@ $container[LocationValidation::class] = function (Container $container): Locatio
  */
 $container[LoginValidation::class] = function (Container $container): LoginValidation {
     return new LoginValidation($container);
+};
+
+/**
+ * Image handler container.
+ *
+ * @param Container $container
+ * @return ImageHandler
+ */
+$container[ImageHandler::class] = function (Container $container): ImageHandler {
+    return new ImageHandler();
 };
 
 /**
