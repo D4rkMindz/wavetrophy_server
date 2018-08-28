@@ -28,13 +28,13 @@ class Init extends AbstractMigration
         $table->addColumn('map_url_android', 'string', ['null' => false, 'limit' => 1000, 'collation' => "utf8_unicode_ci", 'encoding' => "utf8", 'after' => 'coordinate_lon'])->update();
         $table->addColumn('map_url_ios', 'string', ['null' => false, 'limit' => 1000, 'collation' => "utf8_unicode_ci", 'encoding' => "utf8", 'after' => 'map_url_android'])->update();
         $table->addColumn('description', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG, 'collation' => "utf8_unicode_ci", 'encoding' => "utf8", 'after' => 'map_url_ios'])->update();
-        $table->addColumn('created_at', 'datetime', ['null' => false, 'default' => 'CURRENT_TIMESTAMP', 'after' => 'description'])->update();
+        $table->addColumn('comment', 'string', ['null' => true, 'limit' => 255, 'collation' => "utf8_unicode_ci", 'encoding' => "utf8", 'comment' => "Comment about the location for the drivers", 'after' => 'description'])->update();
+        $table->addColumn('created_at', 'datetime', ['null' => false, 'default' => 'CURRENT_TIMESTAMP', 'after' => 'comment'])->update();
         $table->addColumn('created_by', 'string', ['null' => true, 'limit' => 80, 'collation' => "utf8_unicode_ci", 'encoding' => "utf8", 'after' => 'created_at'])->update();
         $table->addColumn('modified_at', 'datetime', ['null' => true, 'after' => 'created_by'])->update();
         $table->addColumn('modified_by', 'string', ['null' => true, 'limit' => 80, 'collation' => "utf8_unicode_ci", 'encoding' => "utf8", 'after' => 'modified_at'])->update();
         $table->addColumn('archived_at', 'datetime', ['null' => true, 'after' => 'modified_by'])->update();
         $table->addColumn('archived_by', 'string', ['null' => true, 'limit' => 80, 'collation' => "utf8_unicode_ci", 'encoding' => "utf8", 'after' => 'archived_at'])->update();
-        $table->addColumn('comment', 'string', ['null' => true, 'limit' => 255, 'collation' => "utf8_unicode_ci", 'encoding' => "utf8", 'comment' => "Comment about the location for the drivers", 'after' => 'archived_by'])->update();
         $table->save();
         $table = $this->table("address_image", ['engine' => "InnoDB", 'encoding' => "utf8", 'collation' => "utf8_unicode_ci", 'comment' => ""]);
         $table->save();
