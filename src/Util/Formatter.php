@@ -20,6 +20,7 @@ class Formatter
         $tmp['hash'] = $event['hash'];
         $tmp['day'] = $event['day'];
         $tmp['start'] = $event['start'];
+        $tmp['end'] = $event['end'];
         $tmp['title'] = $event['title'];
         $tmp['description'] = $event['description'];
         return $tmp;

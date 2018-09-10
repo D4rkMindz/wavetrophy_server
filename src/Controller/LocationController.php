@@ -42,7 +42,6 @@ class LocationController extends AppController
         $this->locationValidation = $container->get(LocationValidation::class);
     }
 
-
     /**
      * Create Location.
      *
@@ -88,8 +87,10 @@ class LocationController extends AppController
 
         $images = array_value('images', $data);
 
+        $userHash = $this->jwt['user_hash'];
+
         $hash = $this->locationRepository->createLocation(
-            $this->jwt['user_hash'],
+            $userHash,
             $wavetrophyHash,
             $roadGroupHash,
             $name,
@@ -104,7 +105,12 @@ class LocationController extends AppController
             $description
         );
 
-        $responseData = JSONResponse::success(['location_hash' => $hash]);
+        $location = [
+            'location_hash' => $hash,
+            'url' => ['android' => $androidURL, 'ios' => $iosURL],
+
+        ];
+        $responseData = JSONResponse::success($location);
 
         return $this->json($response, $responseData);
     }

@@ -3,10 +3,12 @@
 namespace App\Service\UUID;
 
 
+use Ramsey\Uuid\Uuid as UniversalUniqueIdentifier;
+
 class UUID
 {
     public static function generate()
     {
-        return uniqid('wt', true);
+        return UniversalUniqueIdentifier::uuid4();
     }
 }

@@ -49,7 +49,7 @@ class JSONResponse
         $d = new DateTime(date('Y-m-d H:i:s.' . $micro, $t));
 
         $response = [
-            'status' => $status,
+            'code' => $status,
             'http_message' => $httpMessage,
             'message' => $mainMessage,
             'error_code' => $internalErrorCode,

@@ -18,13 +18,9 @@ class MapURLFactory
     {
         // https://maps.google.com/?daddr=47.388789,8.676881+to:47.500412,8.676881
         $url = "https://maps.google.com/?daddr={$lat},{$lon}";
-        if (empty( $to)) {
+        if (empty($additionalStops)) {
             return $url;
         }
-
-        usort($additionalStops, function ($a, $b) {
-            return $a['position'] <=> $b['position'];
-        });
 
         foreach ($additionalStops as $stop) {
             $url .= "+to:{$stop['lat']},{$stop['lon']}";
@@ -44,17 +40,14 @@ class MapURLFactory
     {
         // https://maps.apple.com/?daddr=47.388789,8.676881+to:47.500412,8.676881
         $url = "https://maps.apple.com/?daddr={$lat},{$lon}";
-        if (empty( $to)) {
+        if (empty($additionalStops)) {
             return $url;
         }
 
-        usort($additionalStops, function ($a, $b) {
-            return $a['position'] <=> $b['position'];
-        });
-
-        foreach ($additionalStops as $stop) {
-            $url .= "+to:{$stop['lat']},{$stop['lon']}";
-        }
+        // todo add additional stops api
+        //foreach ($additionalStops as $stop) {
+        //  $url .= "+to:{$stop['lat']},{$stop['lon']}";
+        //}
         return $url;
     }
 }

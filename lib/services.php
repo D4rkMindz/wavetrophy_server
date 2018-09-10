@@ -31,7 +31,7 @@ function preg_replace_array($pattern, $replacement, $subject, $limit = -1)
     }
 }
 
-function array_value(string $key, array $array)
+function array_value(string $key, $array)
 {
     if (array_key_exists($key, $array)) {
         return $array[$key];

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Repository\EventRepository;
+use App\Service\Response\HttpMessage;
 use App\Service\Response\InternalErrorCode;
 use App\Service\Response\JSONResponse;
 use App\Service\Validation\EventValidation;
@@ -29,6 +30,35 @@ class EventController extends AppController
         parent::__construct($container);
         $this->eventRepository = $container->get(EventRepository::class);
         $this->eventValidation = $container->get(EventValidation::class);
+    }
+
+    /**
+     * Get events.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+    public function getEventsAction(Request $request, Response $response, array $args): ResponseInterface
+    {
+        $roadGroupHash = $args['road_group_hash'];
+        $locationHash = $args['location_hash'];
+        $events = $this->eventRepository->getAllEvents($roadGroupHash, $locationHash);
+
+        if (empty($events)) {
+            return $this->json(
+                $response,
+                JSONResponse::error(
+                    InternalErrorCode::ELEMENT_NOT_FOUND,
+                    [],
+                    __('No WaveTrophy Events for location found'),
+                    404,
+                    HttpMessage::CODE404
+                )
+            );
+        }
+        return $this->json($response, JSONResponse::success(['events' => $events]));
     }
 
     /**
@@ -100,7 +130,7 @@ class EventController extends AppController
             return $this->errorFromValidationContext($response, $validationContext);
         }
 
-        $eventArchived = $this->eventRepository->archiveEvent($eventHash, $this->jwt['user_hash']);
+        $eventArchived = $this->eventRepository->archiveEvent($this->jwt['user_hash'], $eventHash);
         if (!$eventArchived) {
             $responseData = JSONResponse::error(InternalErrorCode::ACTION_FAILED, ['error' => __('Event not deleted')], __('Event not deleted'));
             return $this->error($response, __('Event not deleted'), 422, $responseData);

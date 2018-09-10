@@ -108,7 +108,8 @@ class AppController
                 $message,
                 $status,
                 HttpMessage::CODE404
-            )
+            ),
+            $status
         );
     }
 

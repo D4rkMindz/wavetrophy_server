@@ -97,7 +97,7 @@ class LocationRepository extends AppRepository
             foreach ($images as $image) {
                 $imageRow = [
                     'hash' => UUID::generate(),
-                    'url' => $image,
+                    'url' => $image['url'],
                 ];
                 $imageHash = $this->imageTable->insert($imageRow, $userHash);
                 $addressImageRow = [
@@ -118,7 +118,7 @@ class LocationRepository extends AppRepository
      */
     public function existsLocation(string $locationHash)
     {
-        return $this->exists($this->imageTable, ['hash' => $locationHash]);
+        return $this->exists($this->addressTable, ['hash' => $locationHash]);
     }
 
     /**

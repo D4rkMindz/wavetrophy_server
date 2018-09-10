@@ -32,6 +32,8 @@ $app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations', 
 $app->delete('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations/{location_hash}', route(['App\Controller\LocationController', 'deleteLocationAction']))->setName('api.delete.v1.trophies.single.groups.single.locations');
 
 // todo test
+$app->get('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations/{location_hash}/events', route(['App\Controller\EventController', 'getEventsAction']))->setName('api.get.v1.trophies.single.groups.single.locations.single.events');
+// todo test
 $app->post('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations/{location_hash}/events', route(['App\Controller\EventController', 'createEventAction']))->setName('api.post.v1.trophies.single.groups.single.locations.single.events');
 // todo test
 $app->delete('/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/locations/{location_hash}/events/{event_hash}', route(['App\Controller\EventController', 'deleteEventAction']))->setName('api.delete.v1.trophies.single.groups.single.locations.single.events');
