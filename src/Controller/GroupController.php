@@ -99,17 +99,17 @@ class GroupController extends AppController
      */
     public function createGroupAction(Request $request, Response $response, array $args): ResponseInterface
     {
-        $wavetrohpyHash = $args['wavetrophy_hash'];
+        $wavetrophyHash = $args['wavetrophy_hash'];
         $json = $request->getBody()->__toString();
         $data = json_decode($json, true);
         $name = array_value('name', $data);
 
-        $validationContext = $this->groupValidation->validateCreation($wavetrohpyHash, $name);
+        $validationContext = $this->groupValidation->validateCreation($wavetrophyHash, $name);
         if ($validationContext->fails()) {
             return $this->errorFromValidationContext($response, $validationContext);
         }
 
-        $groupHash = $this->groupRepository->createGroup($this->jwt['user_hash'], $wavetrohpyHash, $name);
+        $groupHash = $this->groupRepository->createGroup($this->jwt['user_hash'], $wavetrophyHash, $name);
         $responseData = JSONResponse::success(['group_hash' => $groupHash]);
 
         return $this->json($response, $responseData);

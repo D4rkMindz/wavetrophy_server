@@ -40,7 +40,7 @@ class ContactRepository extends AppRepository
             'email',
         ];
         $query = $this->contactTable->newSelect();
-        $query->select($fields)->where(['wavetrohpy_hash' => $wavetrophyHash]);
+        $query->select($fields)->where(['wavetrophy_hash' => $wavetrophyHash]);
         $contacts = $query->execute()->fetchAll('assoc');
         return $contacts ?: [];
     }
