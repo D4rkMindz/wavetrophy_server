@@ -26,6 +26,10 @@ system("rm $argv[1] -rf");
 if (!is_dir("./htdocs/tmp")) {
     echo "Creating /tmp directory";
     system("mkdir ./htdocs/tmp");
+    // TODO BEFORE GOING LIVE: ADD FOLLOWING IMAGES AGAIN AND FIND BACKUP SOLUTION FOR IMAGES IN DEPLOYMENT SCRIPT
+    //
+    // Allgäu :147bbc12-b22e-4cf8-b0f5-6f95723b5fbb :> f007a8f6-8698-4455-9a0a-7959a9aad68a:> img/cache/i_180910/dfd01c0c-b4e8-45b1-b321-1099473afef5.png
+    // Leutkirch: 576911ea-3581-4242-8e87-070560bb9b3a :> a536b6bc-1f3d-45f1-b357-1b5bfe9e0e70 :> img/cache/i_180911/1229d68f-3e09-4549-ad9f-0754c9c46d0c.png
 }
 
 if (!is_dir("./htdocs/tmp/logs")) {

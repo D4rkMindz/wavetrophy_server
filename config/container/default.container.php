@@ -191,6 +191,16 @@ $container[Monolog\Logger::class . '_request'] = function (Container $container)
 };
 
 /**
+ * Image Handler container.
+ *
+ * @param Container $container
+ * @return ImageHandler
+ */
+$container[ImageHandler::class] = function (Container $container) {
+  return new ImageHandler($container);
+};
+
+/**
  * Not found handler.
  *
  * @param Container $container

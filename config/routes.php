@@ -7,6 +7,7 @@ $app->get('/', 'App\Controller\IndexController:indexAction')->setName('api.get.r
 $app->post('/v1/auth', 'App\Controller\AuthenticationController:authenticateAction')->setName('api.post.v1.auth');
 
 $app->post('/v1/upload/image', 'App\Controller\UploadController:uploadImageAction')->setName('api.post.v1.upload.image');
+$app->get('/v1/img/{image}', 'App\Controller\ImageController:getImageAction')->setName('api.get.v1.load.image');
 
 /**
  * Trophies

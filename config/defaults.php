@@ -15,6 +15,10 @@ $config = [
 
 $config['migrations'] = __DIR__ . '/../resources/migrations';
 
+$config['image'] = [
+    'path' => __DIR__ . '/../../../datastore/wavetrophy/img/',
+];
+
 $config['jwt'] = [
     'active' => false,
     'secret' => '',
@@ -27,6 +31,7 @@ $config['jwt'] = [
         '/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}' => ['GET'],
         '/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/stream' => ['GET'],
         '/v1/trophies/{wavetrophy_hash}/contacts' => ['GET'],
+        '/v1/img/{image}' => ['GET'],
     ]
 ];
 

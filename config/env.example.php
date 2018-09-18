@@ -5,6 +5,7 @@ $env['enableCORS'] = true;
 $env['jwt']['secret'] = 'somesecret';
 
 
+$env['image']['path'] = __DIR__ . '/../../../datastore/img/';
 
 $env['db']['host'] = '';
 $env['db']['port'] = '';
