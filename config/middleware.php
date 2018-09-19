@@ -168,3 +168,15 @@ $app->add(function (Request $request, Response $response, $next) use ($container
     }
     return $response;
 });
+
+$app->add(function (Request $request, Response $response, $next) use ($container) {
+    try {
+        return $next($request, $response);
+    } catch (Exception $e) {
+        $message = $e->getMessage();
+        $message .= "\n";
+        $message .= $e->getTraceAsString();
+        $container->get(Monolog\Logger::class)->addError($message);
+        return $response->write(json_decode(['error' => $e->getMessage()]))->withStatus(500);
+    }
+});

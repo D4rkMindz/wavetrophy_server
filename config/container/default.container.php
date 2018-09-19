@@ -173,7 +173,7 @@ $container[GroupValidation::class] = function (Container $container): GroupValid
  * @return Logger
  */
 $container[Monolog\Logger::class] = function (Container $container) {
-    $fileName = $container->get('settings')->get('logger')['logDir'] . '/' . date('Y-m-d'). '_request.log';
+    $fileName = $container->get('settings')->get('logger')['logDir'] . '/' . date('Y-m-d'). '_info.log';
     $handler = new RotatingFileHandler($fileName);
     return new Logger('app', [$handler]);
 };
