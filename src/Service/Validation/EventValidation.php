@@ -25,7 +25,7 @@ class EventValidation extends AppValidation
         string $groupHash,
         string $locationHash,
         string $title,
-        string $description,
+        $description,
         $start,
         $end,
         int $day
@@ -80,7 +80,7 @@ class EventValidation extends AppValidation
      * @param string $description
      * @param ValidationContext $validationContext
      */
-    private function validateDescription(string $description, ValidationContext $validationContext)
+    private function validateDescription($description, ValidationContext $validationContext)
     {
         if (!empty($description)) {
             $this->assertStringMinLength($description, 'description', 10, $validationContext);
