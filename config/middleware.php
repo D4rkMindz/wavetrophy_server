@@ -177,6 +177,10 @@ $app->add(function (Request $request, Response $response, $next) use ($container
         $message .= "\n";
         $message .= $e->getTraceAsString();
         $container->get(Monolog\Logger::class)->addError($message);
-        return $response->write(json_decode(['error' => $e->getMessage()]))->withStatus(500);
+        return $response->write(json_decode(['error' => $e->getMessage()]))
+            ->withStatus(500)
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Headers', 'Authentication, X-App-Language, X-Token, Content-Type')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     }
 });
