@@ -65,12 +65,17 @@ class AuthenticationController extends AppController
 //        $lang = (string)$request->getParam('lang');
         if ($this->loginValidation->canLogin($username, $password)) {
             $userHash = $this->userRepository->getHashByUsername($username);
-            $expireOffset = 1000 * 60 * 15; // 15 Minutes
+            $expireOffset = 60 * 15; // 15 Minutes
             $token = JWTFactory::generate($username, $userHash, $this->secret, $expireOffset);
             $expiresAt = (time() + $expireOffset);
             $this->logger->info(sprintf('%s (ID: %s)issued a token. Expires at: %s', $username, $userHash, $expiresAt));
             return $this->json($response, ['token' => $token, 'expires_at' => $expiresAt, 'user_hash' => $userHash]);
         }
         return $this->error($response, 'Unprocessable entity', 422, ['message' => __('Invalid user data')]);
+    }
+
+    public function refreshAction(Request $request, Response $response): Response
+    {
+        // TODO implement refresh Action
     }
 }

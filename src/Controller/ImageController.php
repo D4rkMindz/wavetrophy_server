@@ -36,6 +36,8 @@ class ImageController extends AppController
         $imageType = exif_imagetype($imagePath);
         $mime = image_type_to_mime_type($imageType);
         $response->write($image);
-        return $response->withHeader('Content-Type', $mime);
+        return $response->withHeader('Content-Type', $mime)->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Headers', 'Authentication, X-App-Language, X-Token, Content-Type')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     }
 }

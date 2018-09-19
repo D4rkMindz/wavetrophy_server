@@ -32,6 +32,7 @@ $config['jwt'] = [
         '/v1/trophies/{wavetrophy_hash}/groups/{road_group_hash}/stream' => ['GET'],
         '/v1/trophies/{wavetrophy_hash}/contacts' => ['GET'],
         '/v1/img/{image}' => ['GET'],
+        '/v1/renew' => ['POST'],
     ]
 ];
 
