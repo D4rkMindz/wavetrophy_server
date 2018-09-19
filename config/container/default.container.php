@@ -208,6 +208,10 @@ $container[ImageHandler::class] = function (Container $container) {
  */
 $container['notFoundHandler'] = function (Container $container) {
     return function (Request $request, Response $response) use ($container) {
-        return $response->withRedirect($container->get('router')->pathFor('notFound', ['language' => 'en']));
+        return $response->write(json_encode(['error' => 'Not found']))
+            ->withStatus(404)
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Headers', 'Authentication, X-App-Language, X-Token, Content-Type')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     };
 };
